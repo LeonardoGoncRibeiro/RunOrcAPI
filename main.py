@@ -1,4 +1,5 @@
 from helpers.functions import *
+from classes.OrcSimulation import OrcSimulation
 
 def main():
 
@@ -6,7 +7,7 @@ def main():
 
     parameters = read_input_parameters(input_file_name)
 
-    # simulacao = OrcSimulation(parameters)
+    simulacao = OrcSimulation(parameters)
 
     # simulacao.run_simulation()
 
