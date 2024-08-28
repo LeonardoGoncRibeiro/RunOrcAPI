@@ -29,6 +29,8 @@ def main():
     #         - Comprimento e largura de queda, assim como posição do TDP (X e Y)
     #         - Energia cinética e gravitacional total ao longo do tempo (Para cada instante de tempo, obter somatório de m*v^2/2 e de m*g*h ao longo do riser)
     #         - Configuração deformada (Em instantes específicos de tempo, obter as coordenadas X, Y, Z do riser)
+    #         - Tensão efetiva do riser em certos instantes de tempo
+    #         - Envoltórias (Obter envoltórias com tensão máxima e mínima, velocidade máxima e mínima, aceleração máxima e mínima e curvatura máxima e mínima)
     #         - Estatísticas gerais (Planilha geral contendo as seguintes estatísticas gerais: Wall-Clock Time, Velocidade máxima, Tempo de queda)
     #
     # simulacao.save_results(parameters)
