@@ -1,23 +1,16 @@
 from helpers.functions import *
 from classes.OrcSimulation import OrcSimulation
+import os
 
 def main():
 
     input_file_name = "input_file.txt"
 
-    parameters = read_input_parameters(input_file_name)
+    parameters = read_input_parameters(f"input_files/{input_file_name}")
 
     simulacao = OrcSimulation(parameters)
 
-    # TO DO: Fazer método da classe OrcSimulation, que vai rodar um número N de simulações
-    #        especificado na entrada. O arquivo dat utilizado será utilizado como base, e, a 
-    #        cada arquivo de simulação rodado, será alterada a seed de simulação. A seed aumentará
-    #        de 1 até N, e a seed será colocada no nome do arquivo no formato:
-    #          - nome_do_arquivo_XXX.dat
-    #        em que os três algarismos finais representarão a seed (por exemplo, 043).
-    #
-    # if parameters['ind_run_simulation'] == 1:
-    #   simulacao.run_simulation()
+    simulacao.run_simulation()
 
     # TO DO: Fazer método da classe OrcSimulation, que vai salvar os resultados da simulação.
     #        Múltiplos resultados podem ser salvos para uma mesma simulação, e existirá uma função
