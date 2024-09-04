@@ -4,13 +4,13 @@ import os
 
 def main():
 
-    input_file_name = "input_file.txt"
+    input_file_name = "input_catenaria_paper.txt"
 
     parameters = read_input_parameters(f"input_files/{input_file_name}")
 
     simulacao = OrcSimulation(parameters)
 
-    simulacao.run_simulation()
+    simulacao.run_simulation( )
 
     # TO DO: Fazer método da classe OrcSimulation, que vai salvar os resultados da simulação.
     #        Múltiplos resultados podem ser salvos para uma mesma simulação, e existirá uma função
@@ -26,7 +26,7 @@ def main():
     #         - Envoltórias (Obter envoltórias com tensão máxima e mínima, velocidade máxima e mínima, aceleração máxima e mínima e curvatura máxima e mínima)
     #         - Estatísticas gerais (Planilha geral contendo as seguintes estatísticas gerais: Wall-Clock Time, Velocidade máxima, Tempo de queda)
     #
-    # simulacao.save_results(parameters)
+    simulacao.save_results( )
 
 if __name__ == "__main__":
     main()

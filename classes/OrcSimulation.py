@@ -32,15 +32,35 @@ class OrcSimulation:
     
                 self.base_model.SaveSimulation(f"{self.file_name}_{num_file}.sim")
 
-    #def save_results(self):
-    #
-    #    sim_files = [sim for sim in os.listdir("input_files") if (self.file_name in sim) and (".sim" in sim)]
+    def save_results(self):
+        
+        try:
+            path_sim  = "/".join(self.file_name.split('/')[0:-1])
+            name_file = self.file_name.split('/')[-1]
+        except IndexError:
+            path_sim  = ""
+            name_file = self.file_name
 
-    #    for sim_file in sim_files:
+        sim_files = [file for file in os.listdir(path_sim) if (name_file in file) and (".sim" in file)]
 
-    #        if self.ind_obter_estat_gerais:
+        for sim_file in sim_files:
 
-    #            self.save_estat_gerais( )
+            if self.ind_obter_estat_gerais:
 
-    #def save_estat_gerais(self):
+                self.save_estat_gerais(path_sim + "/" + sim_file)
 
+    def save_estat_gerais(self, file):
+
+        model = OrcFxAPI.Model()
+
+        gen = model.general
+
+        model.LoadSimulation(file)
+
+        # Obtendo tempo gasto na simulação
+        WCT = gen.WallClockTime
+
+        # Obtendo indicador de simulação completa
+        SimComp = model.simulationComplete
+        
+        print(WCT, SimComp)

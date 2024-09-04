@@ -2,10 +2,13 @@
 Arquivo de teste
 
 %FILE.NAME
-Teste
+input_files/CatenariaPaperMarStrHBL_BaseCase
 
 %NUMBER.OF.SIMULATIONS
 1
 
 %IND.RUN.SIMULATION
+0
+
+%IND.GENERAL.STATISTICS
 1
