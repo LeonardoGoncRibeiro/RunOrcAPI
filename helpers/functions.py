@@ -11,6 +11,10 @@ def read_input_parameters(input_file_name):
                   "ind_obter_energia"           : 1,
                   "ind_obter_configuracao_def"  : 1,
                   "ind_obter_estat_gerais"      : 1,
+                  "ind_rupture_on_top"          : 1,
+                  "linebot_name"                : "LineBot",
+                  "linetop_name"                : "LineTop",
+                  "seabed_depth"                : 100
                  }
 
     # Leitura do arquivo de entrada
@@ -58,6 +62,14 @@ def get_parameter_name(param_header):
             return "ind_obter_configuracao_def"
         case "%IND.GENERAL.STATISTICS":
             return "ind_obter_estat_gerais"
+        case "%IND.RUPT.TOP":
+            return "ind_rupture_on_top"
+        case "%LINE.BOT.NAME":
+            return "linebot_name"
+        case "%LINE.TOP.NAME":
+            return "linetop_name"
+        case "%SEABED.DEPTH":
+            return "seabed_depth"
         case _:
             print(f"Não há parâmetro denominado {param_header} configurado.")
             return ''
@@ -68,9 +80,9 @@ def get_parameter_value(param_name, line):
 
     match param_name:
         case "header":
-            return param_to_return
+            return str(param_to_return)
         case "file_name":
-            return param_to_return
+            return str(param_to_return)
         case "number_of_simulations":
             return int(param_to_return)
         case "ind_run_simulation":
@@ -85,5 +97,13 @@ def get_parameter_value(param_name, line):
             return int(param_to_return)
         case "ind_obter_estat_gerais":
             return int(param_to_return)
+        case "ind_rupture_on_top":
+            return int(param_to_return)
+        case "linebot_name":
+            return str(param_to_return)
+        case "linetop_name":
+            return str(param_to_return)
+        case "seabed_depth":
+            return float(param_to_return)
 
 

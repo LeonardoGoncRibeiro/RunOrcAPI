@@ -10,5 +10,14 @@ input_files/CatenariaPaperMarStrHBL_BaseCase
 %IND.RUN.SIMULATION
 0
 
-%IND.GENERAL.STATISTICS
+%IND.RUPT.TOP
 1
+
+%LINE.BOT.NAME
+LinhaFlexivel
+
+%LINE.TOP.NAME
+-
+
+%SEABED.DEPTH
+1800

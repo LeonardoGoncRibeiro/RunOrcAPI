@@ -12,6 +12,10 @@ class OrcSimulation:
         self.ind_obter_energia = parameters['ind_obter_energia']
         self.ind_obter_configuracao_def = parameters['ind_obter_configuracao_def']
         self.ind_obter_estat_gerais = parameters['ind_obter_estat_gerais']
+        self.ind_rupture_on_top = parameters['ind_rupture_on_top']
+        self.linebot_name = parameters['linebot_name']
+        self.linetop_name = parameters['linetop_name']
+        self.seabed_depth = parameters['seabed_depth']
 
         self.base_model = OrcFxAPI.Model()
 
@@ -55,6 +59,10 @@ class OrcSimulation:
 
         gen = model.general
 
+        env = model.environment
+
+        Depth = self.seabed_depth
+
         model.LoadSimulation(file)
 
         # Obtendo tempo gasto na simulação
@@ -62,5 +70,38 @@ class OrcSimulation:
 
         # Obtendo indicador de simulação completa
         SimComp = model.simulationComplete
-        
-        print(WCT, SimComp)
+
+        if SimComp:
+
+            TotalSimTime = sum(gen.StageDuration[1:])
+
+            linebot = model[self.linebot_name]
+            linebotrange = linebot.RangeGraphXaxis('X')
+
+            if self.ind_rupture_on_top == 0:
+                linetop = model[self.linetop_name]
+                linetoprange = linetop.RangeGraphXaxis('X')
+
+            time = model.SampleTimes(period = None)
+
+            # Obtendo tempo de queda
+
+            Ztop = linebot.TimeHistory("Z", None, OrcFxAPI.oeEndA)
+
+            FallTime = 9999
+            for k in range(len(time)):
+                if Ztop[k] < -(Depth - 1):
+                    FallTime = time[k]
+                    break
+
+            # Obtendo velocidade máxima
+            # São ignorados os 10 primeiros nós, que podem ter algum valor muito "esdrúxulo" por conta da proximidade com a ruptura
+            Vmax = max(linebot.RangeGraph("Velocity", None).Max[10:])
+
+            # Número de Iterações
+            iter = gen.TimeHistory("Implicit solver iteration count", None)
+
+            NitTotl = sum(iter)
+            NitMean = NitTotl/len(iter)
+            
+            print(WCT, SimComp, TotalSimTime, FallTime, Vmax, NitTotl, NitMean)
