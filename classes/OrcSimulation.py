@@ -1,5 +1,6 @@
 import OrcFxAPI
 import os
+import pandas as pd
 
 class OrcSimulation:
     def __init__(self, parameters):
@@ -71,6 +72,10 @@ class OrcSimulation:
         # Obtendo indicador de simulação completa
         SimComp = model.simulationComplete
 
+        FallTime = 9999
+        Vmax = 0
+        NitTotl = 0
+        NitMean = 0
         if SimComp:
 
             TotalSimTime = sum(gen.StageDuration[1:])
@@ -88,7 +93,7 @@ class OrcSimulation:
 
             Ztop = linebot.TimeHistory("Z", None, OrcFxAPI.oeEndA)
 
-            FallTime = 9999
+            
             for k in range(len(time)):
                 if Ztop[k] < -(Depth - 1):
                     FallTime = time[k]
@@ -103,5 +108,17 @@ class OrcSimulation:
 
             NitTotl = sum(iter)
             NitMean = NitTotl/len(iter)
-            
-            print(WCT, SimComp, TotalSimTime, FallTime, Vmax, NitTotl, NitMean)
+
+        dict_write = {"WCT" : [WCT],
+                      "SimComp" : [SimComp],
+                      "FallTime" : [FallTime],
+                      "Vmax" : [Vmax],
+                      "NitTotl" : [NitTotl],
+                      "NitMean" : [NitMean]
+                     }
+        
+        self.write_results(pd.DataFrame(dict_write), file[:-3] + "_GeneralResults.csv")
+
+    def write_results(self, df, name):
+
+        df.to_csv(name, index = False)
