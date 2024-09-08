@@ -12,12 +12,14 @@ class OrcSimulation:
         self.ind_obter_cmp_e_lrg_queda = parameters['ind_obter_cmp_e_lrg_queda']
         self.ind_obter_energia = parameters['ind_obter_energia']
         self.ind_obter_configuracao_def = parameters['ind_obter_configuracao_def']
+        self.ind_obter_tensao_efetiva = parameters['ind_obter_tensao_efetiva']
         self.ind_obter_estat_gerais = parameters['ind_obter_estat_gerais']
         self.ind_rupture_on_top = parameters['ind_rupture_on_top']
         self.linebot_name = parameters['linebot_name']
         self.linetop_name = parameters['linetop_name']
         self.seabed_depth = parameters['seabed_depth']
         self.def_config_timestamps = parameters['def_config_timestamps']
+        self.eff_tension_timestamps = parameters['eff_tension_timestamps']
 
         self.base_model = OrcFxAPI.Model()
 
@@ -60,6 +62,10 @@ class OrcSimulation:
             if self.ind_obter_configuracao_def:
 
                 self.save_def_config(file_to_get_results)
+
+            if self.ind_obter_tensao_efetiva:
+
+                self.save_eff_tension(file_to_get_results)
 
     def save_estat_gerais(self, file):
 
@@ -106,6 +112,10 @@ class OrcSimulation:
                     FallTime = time[k]
                     break
 
+            # Obtendo tensão efetiva máxima
+            # São ignorados os 10 primeiros nós, que podem ter algum valor muito "esdrúxulo" por conta da proximidade com a ruptura
+            Tmax = max(linebot.RangeGraph("Effective Tension", None).Max[10:])
+
             # Obtendo velocidade máxima
             # São ignorados os 10 primeiros nós, que podem ter algum valor muito "esdrúxulo" por conta da proximidade com a ruptura
             Vmax = max(linebot.RangeGraph("Velocity", None).Max[10:])
@@ -120,6 +130,7 @@ class OrcSimulation:
                       "SimComp" : [SimComp],
                       "FallTime" : [FallTime],
                       "Vmax" : [Vmax],
+                      "Tmax" : [Tmax],
                       "NitTotl" : [NitTotl],
                       "NitMean" : [NitMean]
                      }
@@ -177,15 +188,52 @@ class OrcSimulation:
                 dict_write[f'Y_{timestamp}'] = Ybot
                 dict_write[f'Z_{timestamp}'] = Zbot
 
-            self.write_results(pd.DataFrame(dict_write), file[:-3] + "_Linetop_DeformedConfig.csv")
+            self.write_results(pd.DataFrame(dict_write), file[:-3] + "_Linebop_DeformedConfig.csv")
+
+    def save_eff_tension(self, file):
+
+        model = OrcFxAPI.Model()
+
+        model.LoadSimulation(file)
+
+        linebot = model[self.linebot_name]
+        linebotrange = linebot.RangeGraphXaxis('X')
 
         if self.ind_rupture_on_top == 0:
             linetop = model[self.linetop_name]
             linetoprange = linetop.RangeGraphXaxis('X')
 
+        # Obtendo indicador de simulação completa
+        SimComp = model.simulationComplete
 
+        gen = model.general
 
+        BuildupTime = gen.StageDuration[0]
 
+        if not SimComp:
+            print("Simulação não finalizou. Não serão obtidos resultados da configuração deformada.")
+        else:
+            if self.ind_rupture_on_top == 0:
+
+                dict_write = {}
+
+                for timestamp in self.eff_tension_timestamps:
+
+                    Ttop = linetop.RangeGraph('Effective Tension', OrcFxAPI.SpecifiedPeriod(timestamp - 0.001 + BuildupTime, timestamp + BuildupTime)).Mean
+
+                    dict_write[f'EffTens_{timestamp}'] = Ttop
+
+                self.write_results(pd.DataFrame(dict_write), file[:-3] + "_Linetop_EffectiveTension.csv")
+
+            dict_write = {}
+
+            for timestamp in self.def_config_timestamps:
+
+                Tbot = linebot.RangeGraph('Effective Tension', OrcFxAPI.SpecifiedPeriod(timestamp - 0.001 + BuildupTime, timestamp + BuildupTime)).Mean
+
+                dict_write[f'EffTens_{timestamp}'] = Tbot
+
+            self.write_results(pd.DataFrame(dict_write), file[:-3] + "_Linebop_EffectiveTension.csv")
 
     def write_results(self, df, name):
 

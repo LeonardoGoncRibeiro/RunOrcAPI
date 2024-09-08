@@ -5,17 +5,19 @@ def read_input_parameters(input_file_name):
                   "header"                      : "cabeçalho",
                   "file_name"                   : "simulation",
                   "number_of_simulations"       : 1,
-                  "ind_run_simulation"          : 1,
-                  "ind_obter_configuracao_solo" : 1,
-                  "ind_obter_cmp_e_lrg_queda"   : 1,
-                  "ind_obter_energia"           : 1,
-                  "ind_obter_configuracao_def"  : 1,
-                  "ind_obter_estat_gerais"      : 1,
+                  "ind_run_simulation"          : 0,
+                  "ind_obter_configuracao_solo" : 0,
+                  "ind_obter_cmp_e_lrg_queda"   : 0,
+                  "ind_obter_energia"           : 0,
+                  "ind_obter_configuracao_def"  : 0,
+                  "ind_obter_estat_gerais"      : 0,
+                  "ind_obter_tensao_efetiva"    : 0,
                   "ind_rupture_on_top"          : 1,
                   "linebot_name"                : "LineBot",
                   "linetop_name"                : "LineTop",
                   "seabed_depth"                : 100,
-                  "def_config_timestamps"       : []
+                  "def_config_timestamps"       : [],
+                  "eff_tension_timestamps"      : []
                  }
 
     # Leitura do arquivo de entrada
@@ -63,6 +65,8 @@ def get_parameter_name(param_header):
             return "ind_obter_configuracao_def"
         case "%IND.GENERAL.STATISTICS":
             return "ind_obter_estat_gerais"
+        case "%IND.EFFECTIVE.TENSION":
+            return "ind_obter_tensao_efetiva"
         case "%IND.RUPT.TOP":
             return "ind_rupture_on_top"
         case "%LINE.BOT.NAME":
@@ -73,6 +77,8 @@ def get_parameter_name(param_header):
             return "seabed_depth"
         case "%DEFORMED.CONFIGURATION.TIMESTAMPS":
             return "def_config_timestamps"
+        case "%EFFECTIVE.TENSION.TIMESTAMPS":
+            return "eff_tension_timestamps"
         case _:
             print(f"Não há parâmetro denominado {param_header} configurado.")
             return ''
@@ -100,6 +106,8 @@ def get_parameter_value(param_name, line):
             return int(param_to_return)
         case "ind_obter_estat_gerais":
             return int(param_to_return)
+        case "ind_obter_tensao_efetiva":
+            return int(param_to_return)
         case "ind_rupture_on_top":
             return int(param_to_return)
         case "linebot_name":
@@ -110,5 +118,9 @@ def get_parameter_value(param_name, line):
             return float(param_to_return)
         case "def_config_timestamps":
             return [int(i) for i in param_to_return.split(", ")]
+        case "eff_tension_timestamps":
+            return [int(i) for i in param_to_return.split(", ")]
+        case _:
+            print(f"Não há forma de leitura/tipo definido para o parâmetro {param_name}. Favor definir na função get_parameter_value().")
 
 
