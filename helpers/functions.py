@@ -14,7 +14,8 @@ def read_input_parameters(input_file_name):
                   "ind_rupture_on_top"          : 1,
                   "linebot_name"                : "LineBot",
                   "linetop_name"                : "LineTop",
-                  "seabed_depth"                : 100
+                  "seabed_depth"                : 100,
+                  "def_config_timestamps"       : []
                  }
 
     # Leitura do arquivo de entrada
@@ -70,6 +71,8 @@ def get_parameter_name(param_header):
             return "linetop_name"
         case "%SEABED.DEPTH":
             return "seabed_depth"
+        case "%DEFORMED.CONFIGURATION.TIMESTAMPS":
+            return "def_config_timestamps"
         case _:
             print(f"Não há parâmetro denominado {param_header} configurado.")
             return ''
@@ -105,5 +108,7 @@ def get_parameter_value(param_name, line):
             return str(param_to_return)
         case "seabed_depth":
             return float(param_to_return)
+        case "def_config_timestamps":
+            return [int(i) for i in param_to_return.split(", ")]
 
 

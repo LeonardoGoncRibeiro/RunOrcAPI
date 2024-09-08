@@ -17,6 +17,7 @@ class OrcSimulation:
         self.linebot_name = parameters['linebot_name']
         self.linetop_name = parameters['linetop_name']
         self.seabed_depth = parameters['seabed_depth']
+        self.def_config_timestamps = parameters['def_config_timestamps']
 
         self.base_model = OrcFxAPI.Model()
 
@@ -50,9 +51,15 @@ class OrcSimulation:
 
         for sim_file in sim_files:
 
+            file_to_get_results = path_sim + "/" + sim_file
+
             if self.ind_obter_estat_gerais:
 
-                self.save_estat_gerais(path_sim + "/" + sim_file)
+                self.save_estat_gerais(file_to_get_results)
+
+            if self.ind_obter_configuracao_def:
+
+                self.save_def_config(file_to_get_results)
 
     def save_estat_gerais(self, file):
 
@@ -118,6 +125,67 @@ class OrcSimulation:
                      }
         
         self.write_results(pd.DataFrame(dict_write), file[:-3] + "_GeneralResults.csv")
+
+    def save_def_config(self, file):
+
+        model = OrcFxAPI.Model()
+
+        model.LoadSimulation(file)
+
+        linebot = model[self.linebot_name]
+        linebotrange = linebot.RangeGraphXaxis('X')
+
+        if self.ind_rupture_on_top == 0:
+            linetop = model[self.linetop_name]
+            linetoprange = linetop.RangeGraphXaxis('X')
+
+        # Obtendo indicador de simulação completa
+        SimComp = model.simulationComplete
+
+        gen = model.general
+
+        BuildupTime = gen.StageDuration[0]
+
+        if not SimComp:
+            print("Simulação não finalizou. Não serão obtidos resultados da configuração deformada.")
+        else:
+            if self.ind_rupture_on_top == 0:
+
+                dict_write = {}
+
+                for timestamp in self.def_config_timestamps:
+
+                    Xtop = linetop.RangeGraph('X', OrcFxAPI.SpecifiedPeriod(timestamp - 0.001 + BuildupTime, timestamp + BuildupTime)).Mean
+                    Ytop = linetop.RangeGraph('Y', OrcFxAPI.SpecifiedPeriod(timestamp - 0.001 + BuildupTime, timestamp + BuildupTime)).Mean
+                    Ztop = linetop.RangeGraph('Z', OrcFxAPI.SpecifiedPeriod(timestamp - 0.001 + BuildupTime, timestamp + BuildupTime)).Mean   
+
+                    dict_write[f'X_{timestamp}'] = Xtop
+                    dict_write[f'Y_{timestamp}'] = Ytop
+                    dict_write[f'Z_{timestamp}'] = Ztop
+
+                self.write_results(pd.DataFrame(dict_write), file[:-3] + "_Linetop_DeformedConfig.csv")
+
+            dict_write = {}
+
+            for timestamp in self.def_config_timestamps:
+
+                Xbot = linebot.RangeGraph('X', OrcFxAPI.SpecifiedPeriod(timestamp - 0.001 + BuildupTime, timestamp + BuildupTime)).Mean
+                Ybot = linebot.RangeGraph('Y', OrcFxAPI.SpecifiedPeriod(timestamp - 0.001 + BuildupTime, timestamp + BuildupTime)).Mean
+                Zbot = linebot.RangeGraph('Z', OrcFxAPI.SpecifiedPeriod(timestamp - 0.001 + BuildupTime, timestamp + BuildupTime)).Mean
+
+                dict_write[f'X_{timestamp}'] = Xbot
+                dict_write[f'Y_{timestamp}'] = Ybot
+                dict_write[f'Z_{timestamp}'] = Zbot
+
+            self.write_results(pd.DataFrame(dict_write), file[:-3] + "_Linetop_DeformedConfig.csv")
+
+        if self.ind_rupture_on_top == 0:
+            linetop = model[self.linetop_name]
+            linetoprange = linetop.RangeGraphXaxis('X')
+
+
+
+
 
     def write_results(self, df, name):
 
