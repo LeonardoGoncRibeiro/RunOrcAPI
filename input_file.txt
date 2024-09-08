@@ -1,8 +1,0 @@
-%HEADER
-Arquivo de teste
-
-%SIM.FILE.NAME
-Teste.sim
-
-%NUMBER.OF.SIMULATIONS
-2
