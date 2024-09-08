@@ -3,7 +3,10 @@ import os
 import pandas as pd
 
 class OrcSimulation:
-    def __init__(self, parameters):
+    def __init__(self, parameters, debug):
+        
+        if debug:
+            print("\tInstanciando parâmetros...")
 
         self.file_name = parameters['file_name'] 
         self.number_of_simulations = parameters['number_of_simulations']
@@ -21,26 +24,36 @@ class OrcSimulation:
         self.def_config_timestamps = parameters['def_config_timestamps']
         self.eff_tension_timestamps = parameters['eff_tension_timestamps']
 
+        self.debug = debug
+
         self.base_model = OrcFxAPI.Model()
 
     def run_simulation(self):
-    
+
         if self.ind_run_simulation:
             for i in range(self.number_of_simulations):
+                if self.debug:
+                    print(f"\tRodando simulação número {i + 1}...)")
                 self.base_model.LoadData(f"{self.file_name}.dat")
     
                 self.base_model.RunSimulation( )
 
-                if i < 10:
-                    num_file = f"00{i}"
-                elif i < 100:
-                    num_file = f"0{i}"
+                if i + 1 < 10:
+                    num_file = f"00{i + 1}"
+                elif i + 1 < 100:
+                    num_file = f"0{i + 1}"
                 else:
-                    num_file = f"{i}"
+                    num_file = f"{i + 1}"
     
                 self.base_model.SaveSimulation(f"{self.file_name}_{num_file}.sim")
+        else:
+            if self.debug:
+                print("\tConforme arquivo de entrada, não será rodada simulação do arquivo (provavelmente a simulação já foi rodada.)")
 
     def save_results(self):
+
+        if self.debug:
+            print("\tIniciando coleta de resultados...")
         
         try:
             path_sim  = "/".join(self.file_name.split('/')[0:-1])
@@ -51,19 +64,44 @@ class OrcSimulation:
 
         sim_files = [file for file in os.listdir(path_sim) if (name_file in file) and (".sim" in file)]
 
+        if self.debug:
+            print("\tSerão coletados resultados para os seguintes arquivos de simulação:")
+            for sim_file in sim_files:
+                print(f"\t\t - {sim_file}")
+            print("\tSerão coletados resultados de:")
+            if self.ind_obter_estat_gerais:
+                print(f"\t\t - Estatísticas gerais sobre o processo.")
+            if self.ind_obter_configuracao_def:
+                print(f"\t\t - Configuração deformada (em certos instantes de tempo).")
+            if self.ind_obter_tensao_efetiva:
+                print(f"\t\t - Tensão efetiva (em certos instantes de tempo).")
+            print("\n")
+            print("\tIniciando coleta de resultados...")
+
         for sim_file in sim_files:
 
             file_to_get_results = path_sim + "/" + sim_file
+            if self.debug:
+                print(f"\t\tColeta de resultados do arquivo {file_to_get_results}.")
 
             if self.ind_obter_estat_gerais:
+
+                if self.debug:
+                    print("\t\t\tColetando estatísticas gerais...")
 
                 self.save_estat_gerais(file_to_get_results)
 
             if self.ind_obter_configuracao_def:
 
+                if self.debug:
+                    print("\t\t\tColetando configuração deformada...")
+
                 self.save_def_config(file_to_get_results)
 
             if self.ind_obter_tensao_efetiva:
+
+                if self.debug:
+                    print("\t\t\tColetando tensão efetiva...")
 
                 self.save_eff_tension(file_to_get_results)
 

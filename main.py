@@ -4,13 +4,42 @@ import os
 
 def main():
 
+    # Entrada:
+    # input_file_name - Colocar nome do arquivo input.txt, com os parâmetros para rodada do programa.
+    # debug - Coloque True para a versão debug, que possui alguns impressões ao longo do código para auxílio em possíveis debugs.
+
     input_file_name = "input_catenaria_paper.txt"
+    debug = True
 
-    parameters = read_input_parameters(f"input_files/{input_file_name}")
+    # --------------------------------------------------------------------------------------------------------------------------------
+    # --------------------------------------------------------------------------------------------------------------------------------
+    # --------------------------------------------------------------------------------------------------------------------------------
+    # --------------------------------------------------------------------------------------------------------------------------------
+    # --------------------------------------------------------------------------------------------------------------------------------
 
-    simulacao = OrcSimulation(parameters)
+    if debug:
+        print("Lendo arquivo de entrada...")
+
+    parameters = read_input_parameters(f"input_files/{input_file_name}") 
+
+    if debug:
+        print("Arquivo de entrada lido.\n")
+
+    if debug:
+        print("Instanciando objeto para auxiliar a simulação e coleta de resultados, considerando os parâmetros de entrada...")
+
+    simulacao = OrcSimulation(parameters, debug)
+
+    if debug:
+        print("Objeto instanciado.\n")
+
+    if debug:
+        print("Rodando simulação...")
 
     simulacao.run_simulation( )
+
+    if debug:
+        print("Simulação(ões) rodada(s).\n")
 
     # TO DO: Fazer método da classe OrcSimulation, que vai salvar os resultados da simulação.
     #        Múltiplos resultados podem ser salvos para uma mesma simulação, e existirá uma função
@@ -18,15 +47,19 @@ def main():
     #        será feita a partir de labels do arquivo de entrada.
     #        O método vai chamar várias funções que criam cada uma um resultado específico.
     #        Devem ser criadas funções para salvar os seguintes resultados:
-    #         - Configuração no solo (coordenadas X e Y ao final da simulação)
-    #         - Comprimento e largura de queda, assim como posição do TDP (X e Y)
+    #         - Comprimento e largura de queda, assim como posição do TDP (X e Y) - Incluir dentro da obtenção dos resultados gerais
     #         - Energia cinética e gravitacional total ao longo do tempo (Para cada instante de tempo, obter somatório de m*v^2/2 e de m*g*h ao longo do riser)
-    #         - Configuração deformada (Em instantes específicos de tempo, obter as coordenadas X, Y, Z do riser)
-    #         - Tensão efetiva do riser em certos instantes de tempo
     #         - Envoltórias (Obter envoltórias com tensão máxima e mínima, velocidade máxima e mínima, aceleração máxima e mínima e curvatura máxima e mínima)
-    #         - Estatísticas gerais (Planilha geral contendo as seguintes estatísticas gerais: Wall-Clock Time, Velocidade máxima, Tempo de queda)
     #
+
+    if debug:
+        print("Salvando resultados...")
+
     simulacao.save_results( )
+
+    if debug:
+        print("Resultados salvos.\n")
+        print("Fim do programa.")
 
 if __name__ == "__main__":
     main()
