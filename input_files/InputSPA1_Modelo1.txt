@@ -1,0 +1,45 @@
+%HEADER
+Arquivo input para coleta de resultados do Arquivo Teste_1_CorteTopo_v1b_sem_elemento.dat.
+O arquivo se refere a um modelo que replica o SPA1, repassado pela Petrobrás, com corte emerso e não controlado.
+
+%FILE.NAME
+input_files/Teste_1_CorteTopo_v1b_sem_elemento
+
+%NUMBER.OF.SIMULATIONS
+1
+
+%IND.RUN.SIMULATION
+1
+
+%IND.GENERAL.STATISTICS
+1
+
+%IND.DEFORMED.CONFIGURATION
+1
+
+%IND.EFFECTIVE.TENSION
+1
+
+%IND.CURVATURE
+1
+
+%DEFORMED.CONFIGURATION.TIMESTAMPS
+15, 65, 115, 165
+
+%EFFECTIVE.TENSION.TIMESTAMPS
+5, 5.2, 5.4, 5.6, 5.8
+
+%CURVATURE.TIMESTAMPS
+5, 5.2, 5.4, 5.6, 5.8
+
+%IND.RUPT.TOP
+0
+
+%LINE.BOT.NAME
+IG_G1_2
+
+%LINE.TOP.NAME
+IG_G1_1
+
+%SEABED.DEPTH
+1943
