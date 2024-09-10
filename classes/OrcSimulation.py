@@ -229,9 +229,9 @@ class OrcSimulation:
 
                 for timestamp in self.def_config_timestamps:
 
-                    Xtop = linetop.RangeGraph('X', OrcFxAPI.SpecifiedPeriod(timestamp - 0.001 + BuildupTime, timestamp + BuildupTime)).Mean
-                    Ytop = linetop.RangeGraph('Y', OrcFxAPI.SpecifiedPeriod(timestamp - 0.001 + BuildupTime, timestamp + BuildupTime)).Mean
-                    Ztop = linetop.RangeGraph('Z', OrcFxAPI.SpecifiedPeriod(timestamp - 0.001 + BuildupTime, timestamp + BuildupTime)).Mean   
+                    Xtop = linetop.RangeGraph('X', OrcFxAPI.SpecifiedPeriod(timestamp - 0.001, timestamp)).Mean
+                    Ytop = linetop.RangeGraph('Y', OrcFxAPI.SpecifiedPeriod(timestamp - 0.001, timestamp)).Mean
+                    Ztop = linetop.RangeGraph('Z', OrcFxAPI.SpecifiedPeriod(timestamp - 0.001, timestamp)).Mean   
 
                     dict_write[f'X_{timestamp}'] = Xtop
                     dict_write[f'Y_{timestamp}'] = Ytop
@@ -244,9 +244,9 @@ class OrcSimulation:
 
             for timestamp in self.def_config_timestamps:
 
-                Xbot = linebot.RangeGraph('X', OrcFxAPI.SpecifiedPeriod(timestamp - 0.001 + BuildupTime, timestamp + BuildupTime)).Mean
-                Ybot = linebot.RangeGraph('Y', OrcFxAPI.SpecifiedPeriod(timestamp - 0.001 + BuildupTime, timestamp + BuildupTime)).Mean
-                Zbot = linebot.RangeGraph('Z', OrcFxAPI.SpecifiedPeriod(timestamp - 0.001 + BuildupTime, timestamp + BuildupTime)).Mean
+                Xbot = linebot.RangeGraph('X', OrcFxAPI.SpecifiedPeriod(timestamp - 0.001, timestamp)).Mean
+                Ybot = linebot.RangeGraph('Y', OrcFxAPI.SpecifiedPeriod(timestamp - 0.001, timestamp)).Mean
+                Zbot = linebot.RangeGraph('Z', OrcFxAPI.SpecifiedPeriod(timestamp - 0.001, timestamp)).Mean
 
                 dict_write[f'X_{timestamp}'] = Xbot
                 dict_write[f'Y_{timestamp}'] = Ybot

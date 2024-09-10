@@ -9,7 +9,7 @@ input_files/Teste_1_CorteTopo_v1b_sem_elemento
 1
 
 %IND.RUN.SIMULATION
-1
+0
 
 %IND.GENERAL.STATISTICS
 1
@@ -24,13 +24,13 @@ input_files/Teste_1_CorteTopo_v1b_sem_elemento
 1
 
 %DEFORMED.CONFIGURATION.TIMESTAMPS
-15, 65, 115, 165
+0, 40, 80, 120, 160, 200
 
 %EFFECTIVE.TENSION.TIMESTAMPS
-5, 5.2, 5.4, 5.6, 5.8
+0.0, 0.6, 1.2, 1.8, 2.4, 3.0, 3.6
 
 %CURVATURE.TIMESTAMPS
-5, 5.2, 5.4, 5.6, 5.8
+0.0, 0.6, 1.2, 1.8, 2.4, 3.0, 3.6
 
 %IND.RUPT.TOP
 0

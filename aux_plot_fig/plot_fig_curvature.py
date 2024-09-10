@@ -8,8 +8,8 @@ from functions import *
 # Parâmetros de Entrada
 
 # Nome do arquivo CSV
-csvfile_name_top = r"input_files\Teste_1_CorteTopo_v1b_sem_elemento_001_Linetop_EffectiveTension.csv"
-csvfile_name_bot = r"input_files\Teste_1_CorteTopo_v1b_sem_elemento_001_Linebot_EffectiveTension.csv"
+csvfile_name_top = r"input_files\Teste_1_CorteTopo_v1b_sem_elemento_001_Linetop_Curvature.csv"
+csvfile_name_bot = r"input_files\Teste_1_CorteTopo_v1b_sem_elemento_001_Linebot_Curvature.csv"
 
 # Indicador de ruptura no topo
 in_rupt_top = 0
@@ -18,15 +18,15 @@ in_rupt_top = 0
 timestamps = ['0.0', '0.6', '1.2']
 
 # Nome do arquivo PNG final
-pngfile_name = "Modelo1_EffectiveTension_Timestamps_Init"
+pngfile_name = "Modelo1_Curvature_Timestamps_Init"
 
 # -------------------------------------------------------------------------------------------------------------------------------------------------
 # Plotar figuras
 # -------------------------------------------------------------------------------------------------------------------------------------------------
 
-plot_eff_tensions(csvfile_name_bot, pngfile_name + "_BOT", timestamps)
+plot_curvature(csvfile_name_bot, pngfile_name + "_BOT", timestamps)
 
 if in_rupt_top == 0:
 
-    plot_eff_tensions(csvfile_name_top, pngfile_name + "_TOP", timestamps)
+    plot_curvature(csvfile_name_top, pngfile_name + "_TOP", timestamps)
 
