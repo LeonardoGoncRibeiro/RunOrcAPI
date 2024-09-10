@@ -197,7 +197,7 @@ class OrcSimulation:
                       "NitMean" : [NitMean]
                      }
         
-        self.write_results(pd.DataFrame(dict_write), file[:-3] + "_GeneralResults.csv")
+        self.write_results(pd.DataFrame(dict_write), file[:-4] + "_GeneralResults.csv")
 
     def save_def_config(self, file):
 
@@ -225,6 +225,7 @@ class OrcSimulation:
             if self.ind_rupture_on_top == 0:
 
                 dict_write = {}
+                dict_write['X'] = linetoprange
 
                 for timestamp in self.def_config_timestamps:
 
@@ -236,9 +237,10 @@ class OrcSimulation:
                     dict_write[f'Y_{timestamp}'] = Ytop
                     dict_write[f'Z_{timestamp}'] = Ztop
 
-                self.write_results(pd.DataFrame(dict_write), file[:-3] + "_Linetop_DeformedConfig.csv")
+                self.write_results(pd.DataFrame(dict_write), file[:-4] + "_Linetop_DeformedConfig.csv")
 
             dict_write = {}
+            dict_write['X'] = linebotrange
 
             for timestamp in self.def_config_timestamps:
 
@@ -250,7 +252,7 @@ class OrcSimulation:
                 dict_write[f'Y_{timestamp}'] = Ybot
                 dict_write[f'Z_{timestamp}'] = Zbot
 
-            self.write_results(pd.DataFrame(dict_write), file[:-3] + "_Linebot_DeformedConfig.csv")
+            self.write_results(pd.DataFrame(dict_write), file[:-4] + "_Linebot_DeformedConfig.csv")
 
     def save_eff_tension(self, file):
 
@@ -278,24 +280,26 @@ class OrcSimulation:
             if self.ind_rupture_on_top == 0:
 
                 dict_write = {}
+                dict_write['X'] = linetoprange
 
                 for timestamp in self.eff_tension_timestamps:
 
-                    Ttop = linetop.RangeGraph('Effective Tension', OrcFxAPI.SpecifiedPeriod(timestamp - 0.001 + BuildupTime, timestamp + BuildupTime)).Mean
+                    Ttop = linetop.RangeGraph('Effective Tension', OrcFxAPI.SpecifiedPeriod(timestamp - 0.001, timestamp)).Mean
 
-                    dict_write[f'EffTens_{timestamp}'] = Ttop
+                    dict_write[f'EffTens_{timestamp}'] = Ttop[0:len(linetoprange)]
 
-                self.write_results(pd.DataFrame(dict_write), file[:-3] + "_Linetop_EffectiveTension.csv")
+                self.write_results(pd.DataFrame(dict_write), file[:-4] + "_Linetop_EffectiveTension.csv")
 
             dict_write = {}
+            dict_write['X'] = linebotrange
 
             for timestamp in self.eff_tension_timestamps:
 
-                Tbot = linebot.RangeGraph('Effective Tension', OrcFxAPI.SpecifiedPeriod(timestamp - 0.001 + BuildupTime, timestamp + BuildupTime)).Mean
+                Tbot = linebot.RangeGraph('Effective Tension', OrcFxAPI.SpecifiedPeriod(timestamp - 0.001, timestamp)).Mean
 
-                dict_write[f'EffTens_{timestamp}'] = Tbot
+                dict_write[f'EffTens_{timestamp}'] = Tbot[0:len(linebotrange)]
 
-            self.write_results(pd.DataFrame(dict_write), file[:-3] + "_Linebot_EffectiveTension.csv")
+            self.write_results(pd.DataFrame(dict_write), file[:-4] + "_Linebot_EffectiveTension.csv")
 
     def save_curvature(self, file):
 
@@ -323,24 +327,26 @@ class OrcSimulation:
             if self.ind_rupture_on_top == 0:
 
                 dict_write = {}
+                dict_write['X'] = linetoprange
 
                 for timestamp in self.curv_timestamps:
 
-                    Ctop = linetop.RangeGraph('Curvature', OrcFxAPI.SpecifiedPeriod(timestamp - 0.001 + BuildupTime, timestamp + BuildupTime)).Mean
+                    Ctop = linetop.RangeGraph('Curvature', OrcFxAPI.SpecifiedPeriod(timestamp - 0.001, timestamp)).Mean
 
-                    dict_write[f'Curv_{timestamp}'] = Ctop
+                    dict_write[f'Curv_{timestamp}'] = Ctop[0:len(linetoprange)]
 
-                self.write_results(pd.DataFrame(dict_write), file[:-3] + "_Linetop_Curvature.csv")
+                self.write_results(pd.DataFrame(dict_write), file[:-4] + "_Linetop_Curvature.csv")
 
             dict_write = {}
+            dict_write['X'] = linebotrange
 
             for timestamp in self.curv_timestamps:
 
-                Tbot = linebot.RangeGraph('Curvature', OrcFxAPI.SpecifiedPeriod(timestamp - 0.001 + BuildupTime, timestamp + BuildupTime)).Mean
+                Cbot = linebot.RangeGraph('Curvature', OrcFxAPI.SpecifiedPeriod(timestamp - 0.001, timestamp)).Mean
 
-                dict_write[f'Curv_{timestamp}'] = Tbot
+                dict_write[f'Curv_{timestamp}'] = Cbot[0:len(linebotrange)]
 
-            self.write_results(pd.DataFrame(dict_write), file[:-3] + "_Linebot_Curvature.csv")
+            self.write_results(pd.DataFrame(dict_write), file[:-4] + "_Linebot_Curvature.csv")
 
     def write_results(self, df, name):
 
