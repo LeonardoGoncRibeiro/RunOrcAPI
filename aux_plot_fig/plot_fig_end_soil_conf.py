@@ -17,11 +17,19 @@ timestamps = ['200.0']
 pngfile_name = "Modelo1_SoilConf"
 
 # Limites do gráfico
-xlim = [300, 500]
-ylim = [-400, -200]
+xlim = [300, 900]
+ylim = [-600, 0]
+
+TDPx = 850.636
+TDPy = -451.944
+
+TopConx = 3.386
+TopCony = -1.454
+
+Depth = 1943
 
 # -------------------------------------------------------------------------------------------------------------------------------------------------
 # Plotar figuras
 # -------------------------------------------------------------------------------------------------------------------------------------------------
 
-plot_soil_conf(csvfile_name_bot, pngfile_name, timestamps, xlim, ylim)
+plot_soil_conf(csvfile_name_bot, pngfile_name, timestamps, TDPx, TDPy, TopConx, TopCony, Depth, xlim, ylim)

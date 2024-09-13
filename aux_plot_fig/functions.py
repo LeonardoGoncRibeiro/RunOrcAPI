@@ -87,7 +87,7 @@ def plot_deformed_conf(name_csv_bot, name_csv_top, in_rupt_top, name_png, times_
 
     plt.savefig(f"aux_plot_fig/PNG/{name_png}.png", format = "png")
 
-def plot_soil_conf(name_csv_bot, name_png, times_required, xlim = [], ylim = []):
+def plot_soil_conf(name_csv_bot, name_png, times_required, TDPx, TDPy, Conx, Cony, Depth, xlim = [], ylim = []):
 
     list_cols = [*[f"X_{ts}" for ts in times_required], *[f"Y_{ts}" for ts in times_required], *[f"Z_{ts}" for ts in times_required]]
 
@@ -104,7 +104,15 @@ def plot_soil_conf(name_csv_bot, name_png, times_required, xlim = [], ylim = [])
         y = df[f"Y_{ts}"]
         z = df[f"Z_{ts}"]
 
-        plt.plot(x, y, label = f"{ts} s")
+        plt.plot(x, y)
+
+        df2 = df[df[f"Z_{ts}"] > -Depth+1]
+
+        x = df2[f"X_{ts}"]
+        y = df2[f"Y_{ts}"]
+        z = df2[f"Z_{ts}"]
+
+        plt.plot(x, y, color = 'r')
 
     if xlim != []:
         plt.xlim(xlim)
@@ -115,5 +123,61 @@ def plot_soil_conf(name_csv_bot, name_png, times_required, xlim = [], ylim = [])
     plt.xlabel("X")
     plt.ylabel("Y")
 
+    plt.plot([TDPx, Conx], [TDPy, Cony], color = 'k', linestyle = '--')
+
+    plt.plot(TDPx, TDPy, color = 'k', marker = 'x', markersize = 10, label = "TDP", markeredgewidth = 3)
+
+    plt.legend()
+
     plt.savefig(f"aux_plot_fig/PNG/{name_png}.png", format = "png")
 
+def plot_envoltorias(name_csv, name_png, ylims_B, ylims_T, ylims_V):
+
+    df = pd.read_csv(name_csv)
+
+    fig, ax = plt.subplots()
+
+    plt.plot(df['X'], df['Bmax'], color = 'r', label = 'Máximo')
+    plt.plot(df['X'], df['Bmin'], color = 'b', label = 'Mínimo')
+
+    ax.set_yscale('log')
+        
+    if ylims_B != []:
+        plt.ylim(ylims_B)
+
+    plt.xlabel("X")
+    plt.ylabel("Raio de Curvatura (m)")
+
+    plt.legend()
+
+    plt.savefig(f"aux_plot_fig/PNG/{name_png}_BendRad.png", format = "png")
+
+    fig, ax = plt.subplots()
+
+    plt.plot(df['X'], df['Tmax'], color = 'r', label = 'Máximo')
+    plt.plot(df['X'], df['Tmin'], color = 'b', label = 'Mínimo')
+        
+    if ylims_T != []:
+        plt.ylim(ylims_T)
+
+    plt.xlabel("X")
+    plt.ylabel("Tração (kN)")
+
+    plt.legend()
+
+    plt.savefig(f"aux_plot_fig/PNG/{name_png}_EffTens.png", format = "png")
+
+    fig, ax = plt.subplots()
+
+    plt.plot(df['X'], df['Vmax'], color = 'r', label = 'Máximo')
+    plt.plot(df['X'], df['Vmin'], color = 'b', label = 'Mínimo')
+        
+    if ylims_T != []:
+        plt.ylim(ylims_T)
+
+    plt.xlabel("X")
+    plt.ylabel("Velocidade (m/s)")
+
+    plt.legend()
+
+    plt.savefig(f"aux_plot_fig/PNG/{name_png}_Velocity.png", format = "png")

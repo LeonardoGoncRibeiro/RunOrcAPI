@@ -42,6 +42,10 @@ Domínio aceito: 0 ou 1.
 Indicador de que vai gravar arquivo .csv com posição X, Y e Z do riser em alguns tempos específicos. 
 Domínio aceito: 0 ou 1.
 
+%IND.ENVOLTORIAS
+Indicador de que vai gravar arquivo .csv com as envoltórias de Raio de Curvatura, Tensão efetiva (tração) e Velocidade. 
+Domínio aceito: 0 ou 1.
+
 %DEFORMED.CONFIGURATION.TIMESTAMPS
 Timestamps que serão gravados a posição X, Y e Z do riser, caso a label %IND.DEFORMED.CONFIGURATION seja marcada como 1. Os tempos devem ser separados por vírgula, com um espaço entre eles, por exemplo:
  - 10, 20, 30, 40

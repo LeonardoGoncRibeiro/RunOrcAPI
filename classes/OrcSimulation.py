@@ -17,6 +17,7 @@ class OrcSimulation:
         self.ind_obter_configuracao_def = parameters['ind_obter_configuracao_def']
         self.ind_obter_tensao_efetiva = parameters['ind_obter_tensao_efetiva']
         self.ind_obter_curvatura = parameters['ind_obter_curvatura']
+        self.ind_obter_envoltorias = parameters['ind_obter_envoltorias']
         self.ind_obter_estat_gerais = parameters['ind_obter_estat_gerais']
         self.ind_rupture_on_top = parameters['ind_rupture_on_top']
         self.linebot_name = parameters['linebot_name']
@@ -79,6 +80,8 @@ class OrcSimulation:
                 print(f"\t\t - Tensão efetiva (em certos instantes de tempo).")
             if self.ind_obter_curvatura:
                 print(f"\t\t - Curvatura (em certos instantes de tempo).")
+            if self.ind_obter_envoltorias:
+                print(f"\t\t - Envoltórias (Raio de Curvatura, Velocidade, Tração).")
             print("\n")
             print("\tIniciando coleta de resultados...")
 
@@ -116,7 +119,16 @@ class OrcSimulation:
 
                 self.save_curvature(file_to_get_results)
 
+            if self.ind_obter_envoltorias:
+
+                if self.debug:
+                    print("\t\t\tColetando envoltórias...")
+
+                self.save_envoltorias(file_to_get_results)
+
     def save_estat_gerais(self, file):
+
+        N_nodes_ignore = 10
 
         model = OrcFxAPI.Model()
 
@@ -139,6 +151,7 @@ class OrcSimulation:
         Tmax = 0
         Cmax = 0
         Vmax = 0
+        Bmin = 0
         NitTotl = 0
         NitMean = 0
         if SimComp:
@@ -165,20 +178,24 @@ class OrcSimulation:
                     break
 
             # Obtendo tensão efetiva máxima
-            # São ignorados os 10 primeiros nós, que podem ter algum valor muito "esdrúxulo" por conta da proximidade com a ruptura
-            Tmax = max(linebot.RangeGraph("Effective Tension", None).Max[10:])
+            # São ignorados os N primeiros nós, que podem ter algum valor muito "esdrúxulo" por conta da proximidade com a ruptura
+            Tmax = max(linebot.RangeGraph("Effective Tension", None).Max[N_nodes_ignore:])
 
             # Obtendo tensão efetiva mínima
-            # São ignorados os 10 primeiros nós, que podem ter algum valor muito "esdrúxulo" por conta da proximidade com a ruptura
-            Tmin = max(linebot.RangeGraph("Effective Tension", None).Min[10:])
+            # São ignorados os N primeiros nós, que podem ter algum valor muito "esdrúxulo" por conta da proximidade com a ruptura
+            Tmin = min(linebot.RangeGraph("Effective Tension", None).Min[N_nodes_ignore:])
 
             # Obtendo velocidade máxima
-            # São ignorados os 10 primeiros nós, que podem ter algum valor muito "esdrúxulo" por conta da proximidade com a ruptura
-            Vmax = max(linebot.RangeGraph("Velocity", None).Max[10:])
+            # São ignorados os N primeiros nós, que podem ter algum valor muito "esdrúxulo" por conta da proximidade com a ruptura
+            Vmax = max(linebot.RangeGraph("Velocity", None).Max[N_nodes_ignore:])
 
             # Obtendo a curvatura máxima
-            # São ignorados os 10 primeiros nós, que podem ter algum valor muito "esdrúxulo" por conta da proximidade com a ruptura
-            Cmax = max(linebot.RangeGraph("Curvature", None).Max[10:])
+            # São ignorados os N primeiros nós, que podem ter algum valor muito "esdrúxulo" por conta da proximidade com a ruptura
+            Cmax = max(linebot.RangeGraph("Curvature", None).Max[N_nodes_ignore:])
+
+            # Obtendo a curvatura máxima
+            # São ignorados os N primeiros nós, que podem ter algum valor muito "esdrúxulo" por conta da proximidade com a ruptura
+            Bmin = min(linebot.RangeGraph("Bend radius", None).Min[N_nodes_ignore:])
 
             # Número de Iterações
             iter = gen.TimeHistory("Implicit solver iteration count", None)
@@ -193,6 +210,7 @@ class OrcSimulation:
                       "Tmin" : [Tmin],
                       "Tmax" : [Tmax],
                       "Cmax" : [Cmax],
+                      "Bmin" : [Bmin],
                       "NitTotl" : [NitTotl],
                       "NitMean" : [NitMean]
                      }
@@ -347,6 +365,73 @@ class OrcSimulation:
                 dict_write[f'Curv_{timestamp}'] = Cbot[0:len(linebotrange)]
 
             self.write_results(pd.DataFrame(dict_write), file[:-4] + "_Linebot_Curvature.csv")
+
+    def save_envoltorias(self, file):
+
+        model = OrcFxAPI.Model()
+
+        model.LoadSimulation(file)
+
+        gen = model.general
+
+        TotalSimTime = sum(gen.StageDuration[1:])
+
+        linebot = model[self.linebot_name]
+        linebotrange = linebot.RangeGraphXaxis('X')
+
+        if self.ind_rupture_on_top == 0:
+            linetop = model[self.linetop_name]
+            linetoprange = linetop.RangeGraphXaxis('X')
+
+        # Obtendo indicador de simulação completa
+        SimComp = model.simulationComplete
+
+        gen = model.general
+
+        BuildupTime = gen.StageDuration[0]
+
+        if not SimComp:
+            print("Simulação não finalizou. Não serão obtidos resultados da configuração deformada.")
+        else:
+            if self.ind_rupture_on_top == 0:
+
+                dict_write = {}
+                dict_write['X'] = linetoprange
+
+                Bmax = linetop.RangeGraph('Bend radius', OrcFxAPI.pnWholeSimulation).Max
+                Bmin = linetop.RangeGraph('Bend radius', OrcFxAPI.pnWholeSimulation).Min
+                Tmax = linetop.RangeGraph('Effective tension', OrcFxAPI.pnWholeSimulation).Max
+                Tmin = linetop.RangeGraph('Effective tension', OrcFxAPI.pnWholeSimulation).Min
+                Vmax = linetop.RangeGraph('Velocity', OrcFxAPI.pnWholeSimulation).Max
+                Vmin = linetop.RangeGraph('Velocity', OrcFxAPI.pnWholeSimulation).Min
+
+                dict_write[f'Bmax'] = Bmax[0:len(linetoprange)]
+                dict_write[f'Bmin'] = Bmin[0:len(linetoprange)]
+                dict_write[f'Tmax'] = Tmax[0:len(linetoprange)]
+                dict_write[f'Tmin'] = Tmin[0:len(linetoprange)]
+                dict_write[f'Vmax'] = Vmax[0:len(linetoprange)]
+                dict_write[f'Vmin'] = Vmin[0:len(linetoprange)]
+
+                self.write_results(pd.DataFrame(dict_write), file[:-4] + "_Linetop_Envoltorias.csv")
+
+            dict_write = {}
+            dict_write['X'] = linebotrange
+
+            Bmax = linebot.RangeGraph('Bend radius', OrcFxAPI.pnWholeSimulation).Max
+            Bmin = linebot.RangeGraph('Bend radius', OrcFxAPI.pnWholeSimulation).Min
+            Tmax = linebot.RangeGraph('Effective tension', OrcFxAPI.pnWholeSimulation).Max
+            Tmin = linebot.RangeGraph('Effective tension', OrcFxAPI.pnWholeSimulation).Min
+            Vmax = linebot.RangeGraph('Velocity', OrcFxAPI.pnWholeSimulation).Max
+            Vmin = linebot.RangeGraph('Velocity', OrcFxAPI.pnWholeSimulation).Min
+
+            dict_write[f'Bmax'] = Bmax[0:len(linebotrange)]
+            dict_write[f'Bmin'] = Bmin[0:len(linebotrange)]
+            dict_write[f'Tmax'] = Tmax[0:len(linebotrange)]
+            dict_write[f'Tmin'] = Tmin[0:len(linebotrange)]
+            dict_write[f'Vmax'] = Vmax[0:len(linebotrange)]
+            dict_write[f'Vmin'] = Vmin[0:len(linebotrange)]
+
+            self.write_results(pd.DataFrame(dict_write), file[:-4] + "_Linebot_Envoltorias.csv")
 
     def write_results(self, df, name):
 

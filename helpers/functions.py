@@ -13,6 +13,7 @@ def read_input_parameters(input_file_name):
                   "ind_obter_estat_gerais"      : 0,
                   "ind_obter_tensao_efetiva"    : 0,
                   "ind_obter_curvatura"         : 0,
+                  "ind_obter_envoltorias"       : 0,
                   "ind_rupture_on_top"          : 1,
                   "linebot_name"                : "LineBot",
                   "linetop_name"                : "LineTop",
@@ -71,6 +72,8 @@ def get_parameter_name(param_header):
             return "ind_obter_tensao_efetiva"
         case "%IND.CURVATURE":
             return "ind_obter_curvatura"
+        case "%IND.ENVOLTORIAS":
+            return "ind_obter_envoltorias"
         case "%IND.RUPT.TOP":
             return "ind_rupture_on_top"
         case "%LINE.BOT.NAME":
@@ -115,6 +118,8 @@ def get_parameter_value(param_name, line):
         case "ind_obter_tensao_efetiva":
             return int(param_to_return)
         case "ind_obter_curvatura":
+            return int(param_to_return)
+        case "ind_obter_envoltorias":
             return int(param_to_return)
         case "ind_rupture_on_top":
             return int(param_to_return)
