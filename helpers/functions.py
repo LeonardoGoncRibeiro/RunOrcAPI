@@ -12,12 +12,15 @@ def read_input_parameters(input_file_name):
                   "ind_obter_configuracao_def"  : 0,
                   "ind_obter_estat_gerais"      : 0,
                   "ind_obter_tensao_efetiva"    : 0,
+                  "ind_obter_curvatura"         : 0,
+                  "ind_obter_envoltorias"       : 0,
                   "ind_rupture_on_top"          : 1,
                   "linebot_name"                : "LineBot",
                   "linetop_name"                : "LineTop",
                   "seabed_depth"                : 100,
                   "def_config_timestamps"       : [],
-                  "eff_tension_timestamps"      : []
+                  "eff_tension_timestamps"      : [],
+                  "curv_timestamps"             : []
                  }
 
     # Leitura do arquivo de entrada
@@ -67,6 +70,10 @@ def get_parameter_name(param_header):
             return "ind_obter_estat_gerais"
         case "%IND.EFFECTIVE.TENSION":
             return "ind_obter_tensao_efetiva"
+        case "%IND.CURVATURE":
+            return "ind_obter_curvatura"
+        case "%IND.ENVOLTORIAS":
+            return "ind_obter_envoltorias"
         case "%IND.RUPT.TOP":
             return "ind_rupture_on_top"
         case "%LINE.BOT.NAME":
@@ -79,6 +86,8 @@ def get_parameter_name(param_header):
             return "def_config_timestamps"
         case "%EFFECTIVE.TENSION.TIMESTAMPS":
             return "eff_tension_timestamps"
+        case "%CURVATURE.TIMESTAMPS":
+            return "curv_timestamps"
         case _:
             print(f"Não há parâmetro denominado {param_header} configurado.")
             return ''
@@ -108,6 +117,10 @@ def get_parameter_value(param_name, line):
             return int(param_to_return)
         case "ind_obter_tensao_efetiva":
             return int(param_to_return)
+        case "ind_obter_curvatura":
+            return int(param_to_return)
+        case "ind_obter_envoltorias":
+            return int(param_to_return)
         case "ind_rupture_on_top":
             return int(param_to_return)
         case "linebot_name":
@@ -117,9 +130,11 @@ def get_parameter_value(param_name, line):
         case "seabed_depth":
             return float(param_to_return)
         case "def_config_timestamps":
-            return [int(i) for i in param_to_return.split(", ")]
+            return [float(i) for i in param_to_return.split(", ")]
         case "eff_tension_timestamps":
-            return [int(i) for i in param_to_return.split(", ")]
+            return [float(i) for i in param_to_return.split(", ")]
+        case "curv_timestamps":
+            return [float(i) for i in param_to_return.split(", ")]
         case _:
             print(f"Não há forma de leitura/tipo definido para o parâmetro {param_name}. Favor definir na função get_parameter_value().")
 
