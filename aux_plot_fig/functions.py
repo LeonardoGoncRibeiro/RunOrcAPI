@@ -18,7 +18,19 @@ def plot_eff_tensions(name_csv, name_png, times_required):
 
     fig, ax = plt.subplots()
 
-    sns.lineplot(x = "X", y = "value", data = df, hue = 'variable')
+    palette = ["#1B9E77", # Verde escuro
+               "#D95F02", # Laranja
+               "#7570B3", # Roxo
+               "#E7298A", # Rosa
+               "#66A61E", # Verde claro
+               "#E6AB02", # Amarelo
+               "#A6761D", # Marrom
+               "#666666"  # Cinza
+              ]
+    
+    num_vars = len(df['variable'].unique())
+
+    sns.lineplot(x = "X", y = "value", data = df, hue = 'variable', palette=palette[:num_vars])
 
     plt.legend()
     
@@ -42,7 +54,19 @@ def plot_curvature(name_csv, name_png, times_required):
 
     fig, ax = plt.subplots()
 
-    sns.lineplot(x = "X", y = "value", data = df, hue = 'variable')
+    palette = ["#1B9E77", # Verde escuro
+               "#D95F02", # Laranja
+               "#7570B3", # Roxo
+               "#E7298A", # Rosa
+               "#66A61E", # Verde claro
+               "#E6AB02", # Amarelo
+               "#A6761D", # Marrom
+               "#666666"  # Cinza
+              ]
+    
+    num_vars = len(df['variable'].unique())
+
+    sns.lineplot(x = "X", y = "value", data = df, hue = 'variable', palette = palette[:num_vars])
 
     plt.legend()
     
@@ -63,7 +87,17 @@ def plot_deformed_conf(name_csv_bot, name_csv_top, in_rupt_top, name_png, times_
 
     fig, ax = plt.subplots()
 
-    for ts in timestamps:
+    palette = ["#1B9E77", # Verde escuro
+               "#D95F02", # Laranja
+               "#7570B3", # Roxo
+               "#E7298A", # Rosa
+               "#66A61E", # Verde claro
+               "#E6AB02", # Amarelo
+               "#A6761D", # Marrom
+               "#666666"  # Cinza
+              ]
+
+    for i, ts in enumerate(timestamps):
         x = df[f"X_{ts}"]
         y = df[f"Y_{ts}"]
         z = df[f"Z_{ts}"]
@@ -72,7 +106,7 @@ def plot_deformed_conf(name_csv_bot, name_csv_top, in_rupt_top, name_png, times_
 
         x_new = x*np.cos(LayAzRad) + y*np.sin(LayAzRad)
 
-        plt.plot(x_new, z, label = f"{ts} s")
+        plt.plot(x_new, z, label = f"{ts} s", color = palette[i])
 
     plt.legend()
 

@@ -8,14 +8,14 @@ from functions import *
 # Parâmetros de Entrada
 
 # Nome do arquivo CSV
-csvfile_name_top = r"input_files\Teste_2_CorteTopo_v1b_sem_elemento_001_Linetop_Envoltorias.csv"
-csvfile_name_bot = r"input_files\Teste_2_CorteTopo_v1b_sem_elemento_001_Linebot_Envoltorias.csv"
+csvfile_name_top = r"input_files\Teste_2_CorteTopo_v1b_sem_elemento_Vrs02_Case03_001_Linetop_Envoltorias.csv"
+csvfile_name_bot = r"input_files\Teste_2_CorteTopo_v1b_sem_elemento_Vrs02_Case03_001_Linebot_Envoltorias.csv"
 
 # Indicador de ruptura no topo
 in_rupt_top = 0
 
 # Nome do arquivo PNG final
-pngfile_name = "Modelo2_Envoltorias"
+pngfile_name = "Alternativa2Modelo3_Envoltorias"
 
 ylims_B = [0.1, 1e6]
 ylims_T = []
