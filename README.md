@@ -85,7 +85,5 @@ Domínio aceito: 0 ou 1.
 Timestamps que será gravada a tensão efetiva do riser, caso a label %IND.EFFECTIVE.TENSION seja marcada como 1. Os tempos devem ser separados por vírgula, com um espaço entre eles, por exemplo:
 
  - 10, 20, 30, 40
- 
+
 Domínio aceito: Entre 0 e o tempo total de simulação do arquivo.
-
-
