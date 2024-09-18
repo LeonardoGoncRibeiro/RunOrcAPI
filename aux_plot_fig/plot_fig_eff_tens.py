@@ -8,8 +8,8 @@ from functions import *
 # Parâmetros de Entrada
 
 # Nome do arquivo CSV
-csvfile_name_top = r"input_files\Teste_2_CorteTopo_v1b_sem_elemento_001_Linetop_EffectiveTension.csv"
-csvfile_name_bot = r"input_files\Teste_2_CorteTopo_v1b_sem_elemento_001_Linebot_EffectiveTension.csv"
+csvfile_name_top = r"input_files\Teste_2_CorteTopo_v1b_sem_elemento_Vrs02_Case03_001_Linetop_EffectiveTension.csv"
+csvfile_name_bot = r"input_files\Teste_2_CorteTopo_v1b_sem_elemento_Vrs02_Case03_001_Linebot_EffectiveTension.csv"
 
 # Indicador de ruptura no topo
 in_rupt_top = 0
@@ -18,7 +18,7 @@ in_rupt_top = 0
 timestamps = ['4.8', '5.0', '5.2']
 
 # Nome do arquivo PNG final
-pngfile_name = "Modelo2_EffectiveTension_Timestamps_Tranco"
+pngfile_name = "Alternativa2Modelo3_EffectiveTension_Timestamps_Tranco"
 
 # -------------------------------------------------------------------------------------------------------------------------------------------------
 # Plotar figuras
