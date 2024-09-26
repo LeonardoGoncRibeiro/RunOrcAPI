@@ -8,24 +8,26 @@ class OrcSimulation:
         if debug:
             print("\tInstanciando parâmetros...")
 
-        self.file_name = parameters['file_name'] 
-        self.number_of_simulations = parameters['number_of_simulations']
-        self.ind_run_simulation = parameters['ind_run_simulation']
+        self.file_name                   = parameters['file_name'] 
+        self.number_of_simulations       = parameters['number_of_simulations']
+        self.ind_run_simulation          = parameters['ind_run_simulation']
         self.ind_obter_configuracao_solo = parameters['ind_obter_configuracao_solo']
-        self.ind_obter_cmp_e_lrg_queda = parameters['ind_obter_cmp_e_lrg_queda']
-        self.ind_obter_energia = parameters['ind_obter_energia']
-        self.ind_obter_configuracao_def = parameters['ind_obter_configuracao_def']
-        self.ind_obter_tensao_efetiva = parameters['ind_obter_tensao_efetiva']
-        self.ind_obter_curvatura = parameters['ind_obter_curvatura']
-        self.ind_obter_envoltorias = parameters['ind_obter_envoltorias']
-        self.ind_obter_estat_gerais = parameters['ind_obter_estat_gerais']
-        self.ind_rupture_on_top = parameters['ind_rupture_on_top']
-        self.linebot_name = parameters['linebot_name']
-        self.linetop_name = parameters['linetop_name']
-        self.seabed_depth = parameters['seabed_depth']
-        self.def_config_timestamps = parameters['def_config_timestamps']
-        self.eff_tension_timestamps = parameters['eff_tension_timestamps']
-        self.curv_timestamps = parameters['curv_timestamps']
+        self.ind_obter_cmp_e_lrg_queda   = parameters['ind_obter_cmp_e_lrg_queda']
+        self.ind_obter_energia           = parameters['ind_obter_energia']
+        self.ind_obter_configuracao_def  = parameters['ind_obter_configuracao_def']
+        self.ind_obter_tensao_efetiva    = parameters['ind_obter_tensao_efetiva']
+        self.ind_obter_curvatura         = parameters['ind_obter_curvatura']
+        self.ind_obter_envoltorias       = parameters['ind_obter_envoltorias']
+        self.ind_obter_estat_gerais      = parameters['ind_obter_estat_gerais']
+        self.ind_rupture_on_top          = parameters['ind_rupture_on_top']
+        self.ind_cabo                    = parameters['ind_cabo']
+        self.linebot_name                = parameters['linebot_name']
+        self.linetop_name                = parameters['linetop_name']
+        self.cable_name                  = parameters['cable_name']
+        self.seabed_depth                = parameters['seabed_depth']
+        self.def_config_timestamps       = parameters['def_config_timestamps']
+        self.eff_tension_timestamps      = parameters['eff_tension_timestamps']
+        self.curv_timestamps             = parameters['curv_timestamps']
 
         self.debug = debug
 
@@ -165,13 +167,16 @@ class OrcSimulation:
                 linetop = model[self.linetop_name]
                 linetoprange = linetop.RangeGraphXaxis('X')
 
+            if self.ind_cabo == 1:
+                cabo = model[self.cable_name]
+                caborange = cabo.RangeGraphXaxis('X')
+
             time = model.SampleTimes(period = None)
 
             # Obtendo tempo de queda
 
             Ztop = linebot.TimeHistory("Z", None, OrcFxAPI.oeEndA)
 
-            
             for k in range(len(time)):
                 if Ztop[k] < -(Depth - 1):
                     FallTime = time[k]
@@ -230,6 +235,10 @@ class OrcSimulation:
             linetop = model[self.linetop_name]
             linetoprange = linetop.RangeGraphXaxis('X')
 
+        if self.ind_cabo == 1:
+            cabo = model[self.cable_name]
+            caborange = cabo.RangeGraphXaxis('X')
+
         # Obtendo indicador de simulação completa
         SimComp = model.simulationComplete
 
@@ -256,6 +265,23 @@ class OrcSimulation:
                     dict_write[f'Z_{timestamp}'] = Ztop
 
                 self.write_results(pd.DataFrame(dict_write), file[:-4] + "_Linetop_DeformedConfig.csv")
+
+            if self.ind_cabo == 1:
+
+                dict_write = {}
+                dict_write['X'] = caborange
+
+                for timestamp in self.def_config_timestamps:
+
+                    Xcabo = cabo.RangeGraph('X', OrcFxAPI.SpecifiedPeriod(timestamp - 0.001, timestamp)).Mean
+                    Ycabo = cabo.RangeGraph('Y', OrcFxAPI.SpecifiedPeriod(timestamp - 0.001, timestamp)).Mean
+                    Zcabo = cabo.RangeGraph('Z', OrcFxAPI.SpecifiedPeriod(timestamp - 0.001, timestamp)).Mean   
+
+                    dict_write[f'X_{timestamp}'] = Xcabo
+                    dict_write[f'Y_{timestamp}'] = Ycabo
+                    dict_write[f'Z_{timestamp}'] = Zcabo
+
+                self.write_results(pd.DataFrame(dict_write), file[:-4] + "_Cabo_DeformedConfig.csv")
 
             dict_write = {}
             dict_write['X'] = linebotrange
@@ -285,6 +311,10 @@ class OrcSimulation:
             linetop = model[self.linetop_name]
             linetoprange = linetop.RangeGraphXaxis('X')
 
+        if self.ind_cabo == 1:
+            cabo = model[self.cable_name]
+            caborange = cabo.RangeGraphXaxis('X')
+
         # Obtendo indicador de simulação completa
         SimComp = model.simulationComplete
 
@@ -307,6 +337,19 @@ class OrcSimulation:
                     dict_write[f'EffTens_{timestamp}'] = Ttop[0:len(linetoprange)]
 
                 self.write_results(pd.DataFrame(dict_write), file[:-4] + "_Linetop_EffectiveTension.csv")
+
+            if self.ind_cabo == 1:
+
+                dict_write = {}
+                dict_write['X'] = caborange
+
+                for timestamp in self.eff_tension_timestamps:
+
+                    Ttop = cabo.RangeGraph('Effective Tension', OrcFxAPI.SpecifiedPeriod(timestamp - 0.001, timestamp)).Mean
+
+                    dict_write[f'EffTens_{timestamp}'] = Ttop[0:len(caborange)]
+
+                self.write_results(pd.DataFrame(dict_write), file[:-4] + "_Cabo_EffectiveTension.csv")
 
             dict_write = {}
             dict_write['X'] = linebotrange
@@ -332,6 +375,10 @@ class OrcSimulation:
             linetop = model[self.linetop_name]
             linetoprange = linetop.RangeGraphXaxis('X')
 
+        if self.ind_cabo == 1:
+            cabo = model[self.cable_name]
+            caborange = cabo.RangeGraphXaxis('X')
+
         # Obtendo indicador de simulação completa
         SimComp = model.simulationComplete
 
@@ -354,6 +401,19 @@ class OrcSimulation:
                     dict_write[f'Curv_{timestamp}'] = Ctop[0:len(linetoprange)]
 
                 self.write_results(pd.DataFrame(dict_write), file[:-4] + "_Linetop_Curvature.csv")
+
+            if self.ind_cabo == 1:
+
+                dict_write = {}
+                dict_write['X'] = caborange
+
+                for timestamp in self.curv_timestamps:
+
+                    Ctop = cabo.RangeGraph('Curvature', OrcFxAPI.SpecifiedPeriod(timestamp - 0.001, timestamp)).Mean
+
+                    dict_write[f'Curv_{timestamp}'] = Ctop[0:len(caborange)]
+
+                self.write_results(pd.DataFrame(dict_write), file[:-4] + "_Cabo_Curvature.csv")
 
             dict_write = {}
             dict_write['X'] = linebotrange
@@ -382,6 +442,10 @@ class OrcSimulation:
         if self.ind_rupture_on_top == 0:
             linetop = model[self.linetop_name]
             linetoprange = linetop.RangeGraphXaxis('X')
+
+        if self.ind_cabo == 1:
+            cabo = model[self.cable_name]
+            caborange = cabo.RangeGraphXaxis('X')
 
         # Obtendo indicador de simulação completa
         SimComp = model.simulationComplete
@@ -413,6 +477,27 @@ class OrcSimulation:
                 dict_write[f'Vmin'] = Vmin[0:len(linetoprange)]
 
                 self.write_results(pd.DataFrame(dict_write), file[:-4] + "_Linetop_Envoltorias.csv")
+
+            if self.ind_cabo == 1:
+
+                dict_write = {}
+                dict_write['X'] = caborange
+
+                Bmax = cabo.RangeGraph('Bend radius', OrcFxAPI.pnWholeSimulation).Max
+                Bmin = cabo.RangeGraph('Bend radius', OrcFxAPI.pnWholeSimulation).Min
+                Tmax = cabo.RangeGraph('Effective tension', OrcFxAPI.pnWholeSimulation).Max
+                Tmin = cabo.RangeGraph('Effective tension', OrcFxAPI.pnWholeSimulation).Min
+                Vmax = cabo.RangeGraph('Velocity', OrcFxAPI.pnWholeSimulation).Max
+                Vmin = cabo.RangeGraph('Velocity', OrcFxAPI.pnWholeSimulation).Min
+
+                dict_write[f'Bmax'] = Bmax[0:len(caborange)]
+                dict_write[f'Bmin'] = Bmin[0:len(caborange)]
+                dict_write[f'Tmax'] = Tmax[0:len(caborange)]
+                dict_write[f'Tmin'] = Tmin[0:len(caborange)]
+                dict_write[f'Vmax'] = Vmax[0:len(caborange)]
+                dict_write[f'Vmin'] = Vmin[0:len(caborange)]
+
+                self.write_results(pd.DataFrame(dict_write), file[:-4] + "_Cabo_Envoltorias.csv")
 
             dict_write = {}
             dict_write['X'] = linebotrange

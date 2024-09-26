@@ -8,8 +8,9 @@ from functions import *
 # Parâmetros de Entrada
 
 # Nome do arquivo CSV
-csvfile_name_top = r"input_files\Teste_2_CorteTopo_v1b_sem_elemento_Vrs02_Case03_001_Linetop_DeformedConfig.csv"
-csvfile_name_bot = r"input_files\Teste_2_CorteTopo_v1b_sem_elemento_Vrs02_Case03_001_Linebot_DeformedConfig.csv"
+csvfile_name_top = r"input_files\Teste_2_CorteTopo_v1b_sem_elemento_Vrs02_Case04_Linetop_DeformedConfig.csv"
+csvfile_name_bot = r"input_files\Teste_2_CorteTopo_v1b_sem_elemento_Vrs02_Case04_Linebot_DeformedConfig.csv"
+csvfile_name_cab = r"input_files\Teste_2_CorteTopo_v1b_sem_elemento_Vrs02_Case04_Cabo_DeformedConfig.csv"
 
 # Indicador de ruptura no topo
 in_rupt_top = 0
@@ -18,11 +19,11 @@ in_rupt_top = 0
 timestamps = ['0.0', '5.0', '10.0', '15.0', '20.0']
 
 # Nome do arquivo PNG final
-pngfile_name = "Alternativa2Modelo3_DeformedConfig_Timestamps_Zoom"
+pngfile_name = "Alternativa2Modelo4_DeformedConfig_Timestamps"
 
 # Limites do gráfico
-xlim = [200, 600]
-ylim = [-1100, -700]
+xlim = [0, 600]
+ylim = [-1200, -600]
 
 # Definindo lay-azimuth, para plotar no plano do riser (se não for necessário, colocar 0)
 LayAzimuth = 332
