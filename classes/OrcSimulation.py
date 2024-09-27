@@ -156,6 +156,19 @@ class OrcSimulation:
         Bmin = 0
         NitTotl = 0
         NitMean = 0
+
+        line_list = []
+        WCT_list = []
+        SimComp_list = []
+        FallTime_list = []
+        Vmax_list = []
+        Tmin_list = []
+        Tmax_list = []
+        Cmax_list = []
+        Bmin_list = []
+        NitTotl_list = []
+        NitMean_list = []
+
         if SimComp:
 
             TotalSimTime = sum(gen.StageDuration[1:])
@@ -208,16 +221,105 @@ class OrcSimulation:
             NitTotl = sum(iter)
             NitMean = NitTotl/len(iter)
 
-        dict_write = {"WCT" : [WCT],
-                      "SimComp" : [SimComp],
-                      "FallTime" : [FallTime],
-                      "Vmax" : [Vmax],
-                      "Tmin" : [Tmin],
-                      "Tmax" : [Tmax],
-                      "Cmax" : [Cmax],
-                      "Bmin" : [Bmin],
-                      "NitTotl" : [NitTotl],
-                      "NitMean" : [NitMean]
+            line_list.append(self.linebot_name)
+            WCT_list.append(WCT)
+            SimComp_list.append(SimComp)
+            FallTime_list.append(FallTime)
+            Vmax_list.append(Vmax)
+            Tmin_list.append(Tmin)
+            Tmax_list.append(Tmax)
+            Cmax_list.append(Cmax)
+            Bmin_list.append(Bmin)
+            NitTotl_list.append(NitTotl)
+            NitMean_list.append(NitMean)
+
+            if self.ind_rupture_on_top == 0:
+                # São ignorados os N primeiros nós, que podem ter algum valor muito "esdrúxulo" por conta da proximidade com a ruptura
+                Tmax = max(linetop.RangeGraph("Effective Tension", None).Max[N_nodes_ignore:])
+
+                # Obtendo tensão efetiva mínima
+                # São ignorados os N primeiros nós, que podem ter algum valor muito "esdrúxulo" por conta da proximidade com a ruptura
+                Tmin = min(linetop.RangeGraph("Effective Tension", None).Min[N_nodes_ignore:])
+
+                # Obtendo velocidade máxima
+                # São ignorados os N primeiros nós, que podem ter algum valor muito "esdrúxulo" por conta da proximidade com a ruptura
+                Vmax = max(linetop.RangeGraph("Velocity", None).Max[N_nodes_ignore:])
+
+                # Obtendo a curvatura máxima
+                # São ignorados os N primeiros nós, que podem ter algum valor muito "esdrúxulo" por conta da proximidade com a ruptura
+                Cmax = max(linetop.RangeGraph("Curvature", None).Max[N_nodes_ignore:])
+
+                # Obtendo a curvatura máxima
+                # São ignorados os N primeiros nós, que podem ter algum valor muito "esdrúxulo" por conta da proximidade com a ruptura
+                Bmin = min(linetop.RangeGraph("Bend radius", None).Min[N_nodes_ignore:])
+
+                # Número de Iterações
+                iter = gen.TimeHistory("Implicit solver iteration count", None)
+
+                NitTotl = sum(iter)
+                NitMean = NitTotl/len(iter)
+
+                line_list.append(self.linetop_name)
+                WCT_list.append(WCT)
+                SimComp_list.append(SimComp)
+                FallTime_list.append(FallTime)
+                Vmax_list.append(Vmax)
+                Tmin_list.append(Tmin)
+                Tmax_list.append(Tmax)
+                Cmax_list.append(Cmax)
+                Bmin_list.append(Bmin)
+                NitTotl_list.append(NitTotl)
+                NitMean_list.append(NitMean)
+
+            if self.ind_cabo == 1:
+                # São ignorados os N primeiros nós, que podem ter algum valor muito "esdrúxulo" por conta da proximidade com a ruptura
+                Tmax = max(cabo.RangeGraph("Effective Tension", None).Max[N_nodes_ignore:])
+
+                # Obtendo tensão efetiva mínima
+                # São ignorados os N primeiros nós, que podem ter algum valor muito "esdrúxulo" por conta da proximidade com a ruptura
+                Tmin = min(cabo.RangeGraph("Effective Tension", None).Min[N_nodes_ignore:])
+
+                # Obtendo velocidade máxima
+                # São ignorados os N primeiros nós, que podem ter algum valor muito "esdrúxulo" por conta da proximidade com a ruptura
+                Vmax = max(cabo.RangeGraph("Velocity", None).Max[N_nodes_ignore:])
+
+                # Obtendo a curvatura máxima
+                # São ignorados os N primeiros nós, que podem ter algum valor muito "esdrúxulo" por conta da proximidade com a ruptura
+                Cmax = max(cabo.RangeGraph("Curvature", None).Max[N_nodes_ignore:])
+
+                # Obtendo a curvatura máxima
+                # São ignorados os N primeiros nós, que podem ter algum valor muito "esdrúxulo" por conta da proximidade com a ruptura
+                Bmin = min(cabo.RangeGraph("Bend radius", None).Min[N_nodes_ignore:])
+
+                # Número de Iterações
+                iter = gen.TimeHistory("Implicit solver iteration count", None)
+
+                NitTotl = sum(iter)
+                NitMean = NitTotl/len(iter)
+
+                line_list.append(self.cable_name)
+                WCT_list.append(WCT)
+                SimComp_list.append(SimComp)
+                FallTime_list.append(FallTime)
+                Vmax_list.append(Vmax)
+                Tmin_list.append(Tmin)
+                Tmax_list.append(Tmax)
+                Cmax_list.append(Cmax)
+                Bmin_list.append(Bmin)
+                NitTotl_list.append(NitTotl)
+                NitMean_list.append(NitMean)
+
+        dict_write = {"Linha" : line_list,
+                      "WCT" : WCT_list,
+                      "SimComp" : SimComp_list,
+                      "FallTime" : FallTime_list,
+                      "Vmax" : Vmax_list,
+                      "Tmin" : Tmin_list,
+                      "Tmax" : Tmax_list,
+                      "Cmax" : Cmax_list,
+                      "Bmin" : Bmin_list,
+                      "NitTotl": NitTotl_list,
+                      "NitMean" : NitMean_list
                      }
         
         self.write_results(pd.DataFrame(dict_write), file[:-4] + "_GeneralResults.csv")
