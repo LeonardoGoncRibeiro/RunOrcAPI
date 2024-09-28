@@ -215,3 +215,45 @@ def plot_envoltorias(name_csv, name_png, ylims_B, ylims_T, ylims_V):
     plt.legend()
 
     plt.savefig(f"aux_plot_fig/PNG/{name_png}_Velocity.png", format = "png")
+
+def plot_esforcos(name_csv_bot, name_png):
+
+    df = pd.read_csv(name_csv_bot)
+
+    fig, ax = plt.subplots()
+
+    cols = df.columns[1:]
+
+    palette = ["#1B9E77", # Verde escuro
+               "#D95F02", # Laranja
+               "#7570B3", # Roxo
+               "#E7298A", # Rosa
+               "#66A61E", # Verde claro
+               "#E6AB02", # Amarelo
+               "#A6761D", # Marrom
+               "#666666"  # Cinza
+              ]
+
+    for var in cols:
+
+        plt.figure()
+
+        x = df["Time"]
+        y = df[var]
+
+        if 'EffTens' in var:
+            color = "#1B9E77"
+            ylabel = 'Tração (kN)'
+        elif 'BendMom' in var:
+            color = "#D95F02"
+            ylabel = 'Momento Fletor (kNm)'
+        elif 'ShearFc' in var:
+            color = "#7570B3"
+            ylabel = 'Cortante (kN)'
+
+        plt.plot(x, y, color = color)
+
+        plt.xlabel("Tempo (s)")
+        plt.ylabel(ylabel)
+
+        plt.savefig(f"aux_plot_fig/PNG/{name_png}_{var}.png", format = "png")
