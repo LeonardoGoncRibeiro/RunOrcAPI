@@ -76,6 +76,12 @@ Indicador de que vai gravar arquivo .csv com as envoltórias de Raio de Curvatur
 
 Domínio aceito: 0 ou 1.
 
+*%IND.ESFORCOS*
+
+Indicador de que vai gravar arquivo .csv com os esforços (tração, cortante, momento) nos nós extremos de cada linha.
+
+Domínio aceito: 0 ou 1.
+
 *%DEFORMED.CONFIGURATION.TIMESTAMPS*
 
 Timestamps que serão gravados a posição X, Y e Z do riser, caso a label %IND.DEFORMED.CONFIGURATION seja marcada como 1. Os tempos devem ser separados por vírgula, com um espaço entre eles, por exemplo:
