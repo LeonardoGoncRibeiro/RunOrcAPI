@@ -18,6 +18,7 @@ class OrcSimulation:
         self.ind_obter_tensao_efetiva    = parameters['ind_obter_tensao_efetiva']
         self.ind_obter_curvatura         = parameters['ind_obter_curvatura']
         self.ind_obter_envoltorias       = parameters['ind_obter_envoltorias']
+        self.ind_obter_esforcos          = parameters['ind_obter_esforcos']
         self.ind_obter_estat_gerais      = parameters['ind_obter_estat_gerais']
         self.ind_rupture_on_top          = parameters['ind_rupture_on_top']
         self.ind_cabo                    = parameters['ind_cabo']
@@ -84,6 +85,8 @@ class OrcSimulation:
                 print(f"\t\t - Curvatura (em certos instantes de tempo).")
             if self.ind_obter_envoltorias:
                 print(f"\t\t - Envoltórias (Raio de Curvatura, Velocidade, Tração).")
+            if self.ind_obter_esforcos:
+                print(f"\t\t - Esforços nas extremidades (Tração, Cortante e Momento).")
             print("\n")
             print("\tIniciando coleta de resultados...")
 
@@ -128,6 +131,13 @@ class OrcSimulation:
 
                 self.save_envoltorias(file_to_get_results)
 
+            if self.ind_obter_esforcos:
+
+                if self.debug:
+                    print("\t\t\tColetando esforços...")
+
+                self.save_esforcos(file_to_get_results)
+
     def save_estat_gerais(self, file):
 
         N_nodes_ignore = 10
@@ -156,6 +166,19 @@ class OrcSimulation:
         Bmin = 0
         NitTotl = 0
         NitMean = 0
+
+        line_list = []
+        WCT_list = []
+        SimComp_list = []
+        FallTime_list = []
+        Vmax_list = []
+        Tmin_list = []
+        Tmax_list = []
+        Cmax_list = []
+        Bmin_list = []
+        NitTotl_list = []
+        NitMean_list = []
+
         if SimComp:
 
             TotalSimTime = sum(gen.StageDuration[1:])
@@ -208,16 +231,105 @@ class OrcSimulation:
             NitTotl = sum(iter)
             NitMean = NitTotl/len(iter)
 
-        dict_write = {"WCT" : [WCT],
-                      "SimComp" : [SimComp],
-                      "FallTime" : [FallTime],
-                      "Vmax" : [Vmax],
-                      "Tmin" : [Tmin],
-                      "Tmax" : [Tmax],
-                      "Cmax" : [Cmax],
-                      "Bmin" : [Bmin],
-                      "NitTotl" : [NitTotl],
-                      "NitMean" : [NitMean]
+            line_list.append(self.linebot_name)
+            WCT_list.append(WCT)
+            SimComp_list.append(SimComp)
+            FallTime_list.append(FallTime)
+            Vmax_list.append(Vmax)
+            Tmin_list.append(Tmin)
+            Tmax_list.append(Tmax)
+            Cmax_list.append(Cmax)
+            Bmin_list.append(Bmin)
+            NitTotl_list.append(NitTotl)
+            NitMean_list.append(NitMean)
+
+            if self.ind_rupture_on_top == 0:
+                # São ignorados os N primeiros nós, que podem ter algum valor muito "esdrúxulo" por conta da proximidade com a ruptura
+                Tmax = max(linetop.RangeGraph("Effective Tension", None).Max[N_nodes_ignore:])
+
+                # Obtendo tensão efetiva mínima
+                # São ignorados os N primeiros nós, que podem ter algum valor muito "esdrúxulo" por conta da proximidade com a ruptura
+                Tmin = min(linetop.RangeGraph("Effective Tension", None).Min[N_nodes_ignore:])
+
+                # Obtendo velocidade máxima
+                # São ignorados os N primeiros nós, que podem ter algum valor muito "esdrúxulo" por conta da proximidade com a ruptura
+                Vmax = max(linetop.RangeGraph("Velocity", None).Max[N_nodes_ignore:])
+
+                # Obtendo a curvatura máxima
+                # São ignorados os N primeiros nós, que podem ter algum valor muito "esdrúxulo" por conta da proximidade com a ruptura
+                Cmax = max(linetop.RangeGraph("Curvature", None).Max[N_nodes_ignore:])
+
+                # Obtendo a curvatura máxima
+                # São ignorados os N primeiros nós, que podem ter algum valor muito "esdrúxulo" por conta da proximidade com a ruptura
+                Bmin = min(linetop.RangeGraph("Bend radius", None).Min[N_nodes_ignore:])
+
+                # Número de Iterações
+                iter = gen.TimeHistory("Implicit solver iteration count", None)
+
+                NitTotl = sum(iter)
+                NitMean = NitTotl/len(iter)
+
+                line_list.append(self.linetop_name)
+                WCT_list.append(WCT)
+                SimComp_list.append(SimComp)
+                FallTime_list.append(FallTime)
+                Vmax_list.append(Vmax)
+                Tmin_list.append(Tmin)
+                Tmax_list.append(Tmax)
+                Cmax_list.append(Cmax)
+                Bmin_list.append(Bmin)
+                NitTotl_list.append(NitTotl)
+                NitMean_list.append(NitMean)
+
+            if self.ind_cabo == 1:
+                # São ignorados os N primeiros nós, que podem ter algum valor muito "esdrúxulo" por conta da proximidade com a ruptura
+                Tmax = max(cabo.RangeGraph("Effective Tension", None).Max[N_nodes_ignore:])
+
+                # Obtendo tensão efetiva mínima
+                # São ignorados os N primeiros nós, que podem ter algum valor muito "esdrúxulo" por conta da proximidade com a ruptura
+                Tmin = min(cabo.RangeGraph("Effective Tension", None).Min[N_nodes_ignore:])
+
+                # Obtendo velocidade máxima
+                # São ignorados os N primeiros nós, que podem ter algum valor muito "esdrúxulo" por conta da proximidade com a ruptura
+                Vmax = max(cabo.RangeGraph("Velocity", None).Max[N_nodes_ignore:])
+
+                # Obtendo a curvatura máxima
+                # São ignorados os N primeiros nós, que podem ter algum valor muito "esdrúxulo" por conta da proximidade com a ruptura
+                Cmax = max(cabo.RangeGraph("Curvature", None).Max[N_nodes_ignore:])
+
+                # Obtendo a curvatura máxima
+                # São ignorados os N primeiros nós, que podem ter algum valor muito "esdrúxulo" por conta da proximidade com a ruptura
+                Bmin = min(cabo.RangeGraph("Bend radius", None).Min[N_nodes_ignore:])
+
+                # Número de Iterações
+                iter = gen.TimeHistory("Implicit solver iteration count", None)
+
+                NitTotl = sum(iter)
+                NitMean = NitTotl/len(iter)
+
+                line_list.append(self.cable_name)
+                WCT_list.append(WCT)
+                SimComp_list.append(SimComp)
+                FallTime_list.append(FallTime)
+                Vmax_list.append(Vmax)
+                Tmin_list.append(Tmin)
+                Tmax_list.append(Tmax)
+                Cmax_list.append(Cmax)
+                Bmin_list.append(Bmin)
+                NitTotl_list.append(NitTotl)
+                NitMean_list.append(NitMean)
+
+        dict_write = {"Linha" : line_list,
+                      "WCT" : WCT_list,
+                      "SimComp" : SimComp_list,
+                      "FallTime" : FallTime_list,
+                      "Vmax" : Vmax_list,
+                      "Tmin" : Tmin_list,
+                      "Tmax" : Tmax_list,
+                      "Cmax" : Cmax_list,
+                      "Bmin" : Bmin_list,
+                      "NitTotl": NitTotl_list,
+                      "NitMean" : NitMean_list
                      }
         
         self.write_results(pd.DataFrame(dict_write), file[:-4] + "_GeneralResults.csv")
@@ -517,6 +629,93 @@ class OrcSimulation:
             dict_write[f'Vmin'] = Vmin[0:len(linebotrange)]
 
             self.write_results(pd.DataFrame(dict_write), file[:-4] + "_Linebot_Envoltorias.csv")
+
+    def save_esforcos(self, file):
+
+        model = OrcFxAPI.Model()
+
+        model.LoadSimulation(file)
+
+        gen = model.general
+
+        TotalSimTime = sum(gen.StageDuration[1:])
+
+        linebot = model[self.linebot_name]
+        linebotrange = linebot.RangeGraphXaxis('X')
+
+        if self.ind_rupture_on_top == 0:
+            linetop = model[self.linetop_name]
+            linetoprange = linetop.RangeGraphXaxis('X')
+
+        if self.ind_cabo == 1:
+            cabo = model[self.cable_name]
+            caborange = cabo.RangeGraphXaxis('X')
+
+        time = model.SampleTimes(period = None)
+
+        # Obtendo indicador de simulação completa
+        SimComp = model.simulationComplete
+
+        gen = model.general
+
+        BuildupTime = gen.StageDuration[0]
+
+        dict_write = {}
+        dict_write['Time'] = time
+
+        if not SimComp:
+            print("Simulação não finalizou. Não serão obtidos resultados da configuração deformada.")
+        else:
+            if self.ind_rupture_on_top == 0:
+
+                EffTensTopA = linetop.TimeHistory("Effective tension", None, OrcFxAPI.oeEndA)
+                EffTensTopB = linetop.TimeHistory("Effective tension", None, OrcFxAPI.oeEndB)
+                BendMomTopA = linetop.TimeHistory("Bend moment"      , None, OrcFxAPI.oeEndA)
+                BendMomTopB = linetop.TimeHistory("Bend moment"      , None, OrcFxAPI.oeEndB)
+                ShearFcTopA = linetop.TimeHistory("Shear force"      , None, OrcFxAPI.oeEndA)
+                ShearFcTopB = linetop.TimeHistory("Shear force"      , None, OrcFxAPI.oeEndB)
+
+                dict_write[f'EffTensTopA'] = EffTensTopA[0:len(time)]
+                dict_write[f'EffTensTopB'] = EffTensTopB[0:len(time)]
+                dict_write[f'BendMomTopA'] = BendMomTopA[0:len(time)]
+                dict_write[f'BendMomTopB'] = BendMomTopB[0:len(time)]
+                dict_write[f'ShearFcTopA'] = ShearFcTopA[0:len(time)]
+                dict_write[f'ShearFcTopB'] = ShearFcTopB[0:len(time)]
+
+            if self.ind_cabo == 1:
+
+                EffTensCabA = cabo.TimeHistory("Effective tension", None, OrcFxAPI.oeEndA)
+                EffTensCabB = cabo.TimeHistory("Effective tension", None, OrcFxAPI.oeEndB)
+                BendMomCabA = cabo.TimeHistory("Bend moment"      , None, OrcFxAPI.oeEndA)
+                BendMomCabB = cabo.TimeHistory("Bend moment"      , None, OrcFxAPI.oeEndB)
+                ShearFcCabA = cabo.TimeHistory("Shear force"      , None, OrcFxAPI.oeEndA)
+                ShearFcCabB = cabo.TimeHistory("Shear force"      , None, OrcFxAPI.oeEndB)
+
+                dict_write[f'EffTensCabA'] = EffTensCabA[0:len(time)]
+                dict_write[f'EffTensCabB'] = EffTensCabB[0:len(time)]
+                dict_write[f'BendMomCabA'] = BendMomCabA[0:len(time)]
+                dict_write[f'BendMomCabB'] = BendMomCabB[0:len(time)]
+                dict_write[f'ShearFcCabA'] = ShearFcCabA[0:len(time)]
+                dict_write[f'ShearFcCabB'] = ShearFcCabB[0:len(time)]
+
+            EffTensBotA = cabo.TimeHistory("Effective tension", None, OrcFxAPI.oeEndA)
+            EffTensBotB = cabo.TimeHistory("Effective tension", None, OrcFxAPI.oeEndB)
+            BendMomBotA = cabo.TimeHistory("Bend moment"      , None, OrcFxAPI.oeEndA)
+            BendMomBotB = cabo.TimeHistory("Bend moment"      , None, OrcFxAPI.oeEndB)
+            ShearFcBotA = cabo.TimeHistory("Shear force"      , None, OrcFxAPI.oeEndA)
+            ShearFcBotB = cabo.TimeHistory("Shear force"      , None, OrcFxAPI.oeEndB)
+
+            dict_write[f'EffTensBotA'] = EffTensBotA[0:len(time)]
+            dict_write[f'EffTensBotB'] = EffTensBotB[0:len(time)]
+            dict_write[f'BendMomBotA'] = BendMomBotA[0:len(time)]
+            dict_write[f'BendMomBotB'] = BendMomBotB[0:len(time)]
+            dict_write[f'ShearFcBotA'] = ShearFcBotA[0:len(time)]
+            dict_write[f'ShearFcBotB'] = ShearFcBotB[0:len(time)]
+
+            TimeStep = gen.TimeHistory("Implicit solver time step", None)
+            dict_write[f'TimeStep'] = ShearFcBotB[0:len(time)]
+
+            self.write_results(pd.DataFrame(dict_write), file[:-4] + "_Esforcos.csv")
 
     def write_results(self, df, name):
 

@@ -8,7 +8,7 @@ def main():
     # input_file_name - Colocar nome do arquivo input.txt, com os parâmetros para rodada do programa.
     # debug - Coloque True para a versão debug, que possui alguns impressões ao longo do código para auxílio em possíveis debugs.
 
-    input_file_name = "InputSPA1_Modelo2_Case04.txt"
+    input_file_name = "InputSPA1_A2M5_Correntes.txt"
     debug = True
 
     # --------------------------------------------------------------------------------------------------------------------------------
