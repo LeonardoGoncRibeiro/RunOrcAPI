@@ -179,6 +179,19 @@ class OrcSimulation:
         NitTotl_list = []
         NitMean_list = []
 
+        MaxEffTensA_list = []
+        MinEffTensA_list = []
+        MaxEffTensB_list = []
+        MinEffTensB_list = []
+        MaxBendMomA_list = []
+        MinBendMomA_list = []
+        MaxBendMomB_list = []
+        MinBendMomB_list = []
+        MaxShearFcA_list = []
+        MinShearFcA_list = []
+        MaxShearFcB_list = []
+        MinShearFcB_list = []
+
         if SimComp:
 
             TotalSimTime = sum(gen.StageDuration[1:])
@@ -225,6 +238,20 @@ class OrcSimulation:
             # São ignorados os N primeiros nós, que podem ter algum valor muito "esdrúxulo" por conta da proximidade com a ruptura
             Bmin = min(linebot.RangeGraph("Bend radius", None).Min[N_nodes_ignore:])
 
+            # Obtendo esforços nas extremidades
+            MaxEffTensA = max(linebot.TimeHistory("Effective tension", None, OrcFxAPI.oeEndA))
+            MinEffTensA = min(linebot.TimeHistory("Effective tension", None, OrcFxAPI.oeEndA))
+            MaxEffTensB = max(linebot.TimeHistory("Effective tension", None, OrcFxAPI.oeEndB))
+            MinEffTensB = min(linebot.TimeHistory("Effective tension", None, OrcFxAPI.oeEndB))
+            MaxBendMomA = max(linebot.TimeHistory("Bend moment", None, OrcFxAPI.oeEndA))
+            MinBendMomA = min(linebot.TimeHistory("Bend moment", None, OrcFxAPI.oeEndA))
+            MaxBendMomB = max(linebot.TimeHistory("Bend moment", None, OrcFxAPI.oeEndB))
+            MinBendMomB = min(linebot.TimeHistory("Bend moment", None, OrcFxAPI.oeEndB))
+            MaxShearFcA = max(linebot.TimeHistory("Shear force", None, OrcFxAPI.oeEndA))
+            MinShearFcA = min(linebot.TimeHistory("Shear force", None, OrcFxAPI.oeEndA))
+            MaxShearFcB = max(linebot.TimeHistory("Shear force", None, OrcFxAPI.oeEndB))
+            MinShearFcB = min(linebot.TimeHistory("Shear force", None, OrcFxAPI.oeEndB))
+
             # Número de Iterações
             iter = gen.TimeHistory("Implicit solver iteration count", None)
 
@@ -240,6 +267,18 @@ class OrcSimulation:
             Tmax_list.append(Tmax)
             Cmax_list.append(Cmax)
             Bmin_list.append(Bmin)
+            MaxEffTensA_list.append(MaxEffTensA)
+            MinEffTensA_list.append(MinEffTensA)
+            MaxEffTensB_list.append(MaxEffTensB)
+            MinEffTensB_list.append(MinEffTensB)
+            MaxBendMomA_list.append(MaxBendMomA)
+            MinBendMomA_list.append(MinBendMomA)
+            MaxBendMomB_list.append(MaxBendMomB)
+            MinBendMomB_list.append(MinBendMomB)
+            MaxShearFcA_list.append(MaxShearFcA)
+            MinShearFcA_list.append(MinShearFcA)
+            MaxShearFcB_list.append(MaxShearFcB)
+            MinShearFcB_list.append(MinShearFcB)
             NitTotl_list.append(NitTotl)
             NitMean_list.append(NitMean)
 
@@ -263,6 +302,20 @@ class OrcSimulation:
                 # São ignorados os N primeiros nós, que podem ter algum valor muito "esdrúxulo" por conta da proximidade com a ruptura
                 Bmin = min(linetop.RangeGraph("Bend radius", None).Min[N_nodes_ignore:])
 
+                # Obtendo esforços nas extremidades
+                MaxEffTensA = max(linetop.TimeHistory("Effective tension", None, OrcFxAPI.oeEndA))
+                MinEffTensA = min(linetop.TimeHistory("Effective tension", None, OrcFxAPI.oeEndA))
+                MaxEffTensB = max(linetop.TimeHistory("Effective tension", None, OrcFxAPI.oeEndB))
+                MinEffTensB = min(linetop.TimeHistory("Effective tension", None, OrcFxAPI.oeEndB))
+                MaxBendMomA = max(linetop.TimeHistory("Bend moment", None, OrcFxAPI.oeEndA))
+                MinBendMomA = min(linetop.TimeHistory("Bend moment", None, OrcFxAPI.oeEndA))
+                MaxBendMomB = max(linetop.TimeHistory("Bend moment", None, OrcFxAPI.oeEndB))
+                MinBendMomB = min(linetop.TimeHistory("Bend moment", None, OrcFxAPI.oeEndB))
+                MaxShearFcA = max(linetop.TimeHistory("Shear force", None, OrcFxAPI.oeEndA))
+                MinShearFcA = min(linetop.TimeHistory("Shear force", None, OrcFxAPI.oeEndA))
+                MaxShearFcB = max(linetop.TimeHistory("Shear force", None, OrcFxAPI.oeEndB))
+                MinShearFcB = min(linetop.TimeHistory("Shear force", None, OrcFxAPI.oeEndB))
+
                 # Número de Iterações
                 iter = gen.TimeHistory("Implicit solver iteration count", None)
 
@@ -278,6 +331,18 @@ class OrcSimulation:
                 Tmax_list.append(Tmax)
                 Cmax_list.append(Cmax)
                 Bmin_list.append(Bmin)
+                MaxEffTensA_list.append(MaxEffTensA)
+                MinEffTensA_list.append(MinEffTensA)
+                MaxEffTensB_list.append(MaxEffTensB)
+                MinEffTensB_list.append(MinEffTensB)
+                MaxBendMomA_list.append(MaxBendMomA)
+                MinBendMomA_list.append(MinBendMomA)
+                MaxBendMomB_list.append(MaxBendMomB)
+                MinBendMomB_list.append(MinBendMomB)
+                MaxShearFcA_list.append(MaxShearFcA)
+                MinShearFcA_list.append(MinShearFcA)
+                MaxShearFcB_list.append(MaxShearFcB)
+                MinShearFcB_list.append(MinShearFcB)
                 NitTotl_list.append(NitTotl)
                 NitMean_list.append(NitMean)
 
@@ -301,6 +366,20 @@ class OrcSimulation:
                 # São ignorados os N primeiros nós, que podem ter algum valor muito "esdrúxulo" por conta da proximidade com a ruptura
                 Bmin = min(cabo.RangeGraph("Bend radius", None).Min[N_nodes_ignore:])
 
+                # Obtendo esforços nas extremidades
+                MaxEffTensA = max(cabo.TimeHistory("Effective tension", None, OrcFxAPI.oeEndA))
+                MinEffTensA = min(cabo.TimeHistory("Effective tension", None, OrcFxAPI.oeEndA))
+                MaxEffTensB = max(cabo.TimeHistory("Effective tension", None, OrcFxAPI.oeEndB))
+                MinEffTensB = min(cabo.TimeHistory("Effective tension", None, OrcFxAPI.oeEndB))
+                MaxBendMomA = max(cabo.TimeHistory("Bend moment", None, OrcFxAPI.oeEndA))
+                MinBendMomA = min(cabo.TimeHistory("Bend moment", None, OrcFxAPI.oeEndA))
+                MaxBendMomB = max(cabo.TimeHistory("Bend moment", None, OrcFxAPI.oeEndB))
+                MinBendMomB = min(cabo.TimeHistory("Bend moment", None, OrcFxAPI.oeEndB))
+                MaxShearFcA = max(cabo.TimeHistory("Shear force", None, OrcFxAPI.oeEndA))
+                MinShearFcA = min(cabo.TimeHistory("Shear force", None, OrcFxAPI.oeEndA))
+                MaxShearFcB = max(cabo.TimeHistory("Shear force", None, OrcFxAPI.oeEndB))
+                MinShearFcB = min(cabo.TimeHistory("Shear force", None, OrcFxAPI.oeEndB))
+
                 # Número de Iterações
                 iter = gen.TimeHistory("Implicit solver iteration count", None)
 
@@ -316,6 +395,18 @@ class OrcSimulation:
                 Tmax_list.append(Tmax)
                 Cmax_list.append(Cmax)
                 Bmin_list.append(Bmin)
+                MaxEffTensA_list.append(MaxEffTensA)
+                MinEffTensA_list.append(MinEffTensA)
+                MaxEffTensB_list.append(MaxEffTensB)
+                MinEffTensB_list.append(MinEffTensB)
+                MaxBendMomA_list.append(MaxBendMomA)
+                MinBendMomA_list.append(MinBendMomA)
+                MaxBendMomB_list.append(MaxBendMomB)
+                MinBendMomB_list.append(MinBendMomB)
+                MaxShearFcA_list.append(MaxShearFcA)
+                MinShearFcA_list.append(MinShearFcA)
+                MaxShearFcB_list.append(MaxShearFcB)
+                MinShearFcB_list.append(MinShearFcB)
                 NitTotl_list.append(NitTotl)
                 NitMean_list.append(NitMean)
 
@@ -328,6 +419,18 @@ class OrcSimulation:
                       "Tmax" : Tmax_list,
                       "Cmax" : Cmax_list,
                       "Bmin" : Bmin_list,
+                      "MaxEffTensA" : MaxEffTensA_list,
+                      "MinEffTensA" : MinEffTensA_list,
+                      "MaxEffTensB" : MaxEffTensB_list,
+                      "MinEffTensB" : MinEffTensB_list,
+                      "MaxBendMomA" : MaxBendMomA_list,
+                      "MinBendMomA" : MinBendMomA_list,
+                      "MaxBendMomB" : MaxBendMomB_list,
+                      "MinBendMomB" : MinBendMomB_list,
+                      "MaxShearFcA" : MaxShearFcA_list,
+                      "MinShearFcA" : MinShearFcA_list,
+                      "MaxShearFcB" : MaxShearFcB_list,
+                      "MinShearFcB" : MinShearFcB_list,
                       "NitTotl": NitTotl_list,
                       "NitMean" : NitMean_list
                      }
