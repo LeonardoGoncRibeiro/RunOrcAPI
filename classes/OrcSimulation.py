@@ -140,7 +140,7 @@ class OrcSimulation:
 
     def save_estat_gerais(self, file):
 
-        N_nodes_ignore = 10
+        N_nodes_ignore = 0
 
         model = OrcFxAPI.Model()
 
