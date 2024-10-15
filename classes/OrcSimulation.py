@@ -140,7 +140,7 @@ class OrcSimulation:
 
     def save_estat_gerais(self, file):
 
-        N_nodes_ignore = 0
+        N_nodes_ignore = 30
 
         model = OrcFxAPI.Model()
 
@@ -284,23 +284,23 @@ class OrcSimulation:
 
             if self.ind_rupture_on_top == 0:
                 # São ignorados os N primeiros nós, que podem ter algum valor muito "esdrúxulo" por conta da proximidade com a ruptura
-                Tmax = max(linetop.RangeGraph("Effective Tension", None).Max[N_nodes_ignore:])
+                Tmax = max(linetop.RangeGraph("Effective Tension", None).Max[:-N_nodes_ignore])
 
                 # Obtendo tensão efetiva mínima
                 # São ignorados os N primeiros nós, que podem ter algum valor muito "esdrúxulo" por conta da proximidade com a ruptura
-                Tmin = min(linetop.RangeGraph("Effective Tension", None).Min[N_nodes_ignore:])
+                Tmin = min(linetop.RangeGraph("Effective Tension", None).Min[:-N_nodes_ignore])
 
                 # Obtendo velocidade máxima
                 # São ignorados os N primeiros nós, que podem ter algum valor muito "esdrúxulo" por conta da proximidade com a ruptura
-                Vmax = max(linetop.RangeGraph("Velocity", None).Max[N_nodes_ignore:])
+                Vmax = max(linetop.RangeGraph("Velocity", None).Max[:-N_nodes_ignore])
 
                 # Obtendo a curvatura máxima
                 # São ignorados os N primeiros nós, que podem ter algum valor muito "esdrúxulo" por conta da proximidade com a ruptura
-                Cmax = max(linetop.RangeGraph("Curvature", None).Max[N_nodes_ignore:])
+                Cmax = max(linetop.RangeGraph("Curvature", None).Max[:-N_nodes_ignore])
 
                 # Obtendo a curvatura máxima
                 # São ignorados os N primeiros nós, que podem ter algum valor muito "esdrúxulo" por conta da proximidade com a ruptura
-                Bmin = min(linetop.RangeGraph("Bend radius", None).Min[N_nodes_ignore:])
+                Bmin = min(linetop.RangeGraph("Bend radius", None).Min[:-N_nodes_ignore])
 
                 # Obtendo esforços nas extremidades
                 MaxEffTensA = max(linetop.TimeHistory("Effective tension", None, OrcFxAPI.oeEndA))
@@ -348,23 +348,23 @@ class OrcSimulation:
 
             if self.ind_cabo == 1:
                 # São ignorados os N primeiros nós, que podem ter algum valor muito "esdrúxulo" por conta da proximidade com a ruptura
-                Tmax = max(cabo.RangeGraph("Effective Tension", None).Max[N_nodes_ignore:])
+                Tmax = max(cabo.RangeGraph("Effective Tension", None).Max)
 
                 # Obtendo tensão efetiva mínima
                 # São ignorados os N primeiros nós, que podem ter algum valor muito "esdrúxulo" por conta da proximidade com a ruptura
-                Tmin = min(cabo.RangeGraph("Effective Tension", None).Min[N_nodes_ignore:])
+                Tmin = min(cabo.RangeGraph("Effective Tension", None).Min)
 
                 # Obtendo velocidade máxima
                 # São ignorados os N primeiros nós, que podem ter algum valor muito "esdrúxulo" por conta da proximidade com a ruptura
-                Vmax = max(cabo.RangeGraph("Velocity", None).Max[N_nodes_ignore:])
+                Vmax = max(cabo.RangeGraph("Velocity", None).Max)
 
                 # Obtendo a curvatura máxima
                 # São ignorados os N primeiros nós, que podem ter algum valor muito "esdrúxulo" por conta da proximidade com a ruptura
-                Cmax = max(cabo.RangeGraph("Curvature", None).Max[N_nodes_ignore:])
+                Cmax = max(cabo.RangeGraph("Curvature", None).Max)
 
                 # Obtendo a curvatura máxima
                 # São ignorados os N primeiros nós, que podem ter algum valor muito "esdrúxulo" por conta da proximidade com a ruptura
-                Bmin = min(cabo.RangeGraph("Bend radius", None).Min[N_nodes_ignore:])
+                Bmin = min(cabo.RangeGraph("Bend radius", None).Min)
 
                 # Obtendo esforços nas extremidades
                 MaxEffTensA = max(cabo.TimeHistory("Effective tension", None, OrcFxAPI.oeEndA))
